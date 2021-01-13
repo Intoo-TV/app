@@ -125,7 +125,7 @@ class CreateRequest extends React.Component {
         {this.state.step == 1 ? (
           <View>
             <View style={{flexDirection: 'row'}}>
-              <Icon name="ios-arrow-back" size={30}></Icon>
+              <Icon name="ios-arrow-back" size={30} onPress={this.props.navigation.goBack()}/>
               <Text
                 style={{
                   fontSize: 25,

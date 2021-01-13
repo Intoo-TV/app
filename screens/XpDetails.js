@@ -1,13 +1,9 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, Image, SafeAreaView} from 'react-native';
+import {Image, StyleSheet, Text, View} from 'react-native';
 
-import {
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Entypo';
-import Header from "../components/Header";
+import Header from '../components/Header';
 
 export default class XpDetails extends Component {
   constructor(props) {

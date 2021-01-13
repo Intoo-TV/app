@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View, Image, Button, ScrollView} from 'react-native';
+import {Image, ScrollView, StyleSheet, Text} from 'react-native';
 
 export default class ProfileComplete extends React.Component {
   state = {};
