@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Entypo';
+import Header from "../components/Header";
 
 export default class XpDetails extends Component {
   constructor(props) {
@@ -51,33 +52,7 @@ export default class XpDetails extends Component {
   render() {
     return (
       <ScrollView style={{paddingTop: '5%', backgroundColor: '#FFF', flex: 1}}>
-        <View style={{flexDirection: 'row', marginLeft: '5%'}}>
-          <Icon name="menu" size={20} color={'#000'}></Icon>
-          <Icon
-            name="shop"
-            size={20}
-            style={{marginLeft: 10, color: '#000'}}></Icon>
-          <Text
-            style={{
-              fontSize: 20,
-              marginLeft: 5,
-              color: '#000',
-              fontWeight: 'bold',
-            }}>
-            XP Market
-          </Text>
-          <Icon
-            name="bell"
-            size={20}
-            color={'#000'}
-            style={{marginLeft: '35%'}}></Icon>
-          <Icon
-            name="database"
-            size={20}
-            color={'#000'}
-            style={{marginLeft: '5%'}}></Icon>
-          <Text style={{fontSize: 20, marginLeft: 5, color: '#000'}}>500</Text>
-        </View>
+        <Header />
 
         <View style={{alignSelf: 'center', paddingTop: '10%'}}>
           <View

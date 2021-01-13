@@ -3,7 +3,7 @@ import {Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Carousel from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-
+import Header from '../components/Header';
 import {connect} from 'react-redux';
 import {mapStateToProps} from '../tools/util';
 import {store} from '../store';
@@ -298,33 +298,7 @@ class GuestHome extends Component {
     return (
       <SafeAreaView
         style={{flex: 1, paddingTop: '5%', backgroundColor: '#FFF'}}>
-        <View style={{flexDirection: 'row', marginLeft: '5%'}}>
-          <Icon name="bars" size={20} color={'#000'}></Icon>
-          <Icon
-            name="home"
-            size={20}
-            style={{marginLeft: 25, color: '#000'}}></Icon>
-          <Text
-            style={{
-              fontSize: 20,
-              marginLeft: 5,
-              color: '#000',
-              fontWeight: 'bold',
-            }}>
-            Home
-          </Text>
-          <Icon
-            name="bell"
-            size={20}
-            color={'#000'}
-            style={{marginLeft: '40%'}}></Icon>
-          <Icon
-            name="database"
-            size={20}
-            color={'#000'}
-            style={{marginLeft: '5%'}}></Icon>
-          <Text style={{fontSize: 20, marginLeft: 5, color: '#000'}}>500</Text>
-        </View>
+        <Header />
         <Text style={styles.heading}>Past Experiences</Text>
         <View
           style={{
