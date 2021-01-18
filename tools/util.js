@@ -1,6 +1,6 @@
 import {AsyncStorage} from 'react-native';
 
-const API_ENDPOINT = 'http://54.75.53.28:3005/api/';
+const API_ENDPOINT = 'https://api.intoo.tv/api/';
 
 const ACCESS_TOKEN = 'ACCESS_TOKEN';
 
