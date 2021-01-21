@@ -43,7 +43,6 @@ async function getSigner() {
     },
   };
   try {
-    console.log(httpProvider);
     const gsnProvider = await RelayProvider.newProvider({
       provider: httpProvider,
       conf,
@@ -51,12 +50,12 @@ async function getSigner() {
     // console.log('gsnprovider');
     // console.log(gsnProvider);
 
-    const provider = new ethers.providers.Web3Provider(gsnProvider);
+    const provider = await new ethers.providers.Web3Provider(gsnProvider);
 
     const {wallet} = store.getState();
-
+    console.log(wallet);
     if (wallet.privateKey) {
-      return new ethers.Wallet(wallet.privateKey).connect(provider);
+      return await new ethers.Wallet(wallet.privateKey).connect(provider);
     } else {
       return null;
     }

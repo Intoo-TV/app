@@ -96,7 +96,7 @@ class CreateRequest extends React.Component {
 
             console.log(this.props.wallet.address);
 
-            this.props.navigation.navigate('ExpLive');
+            this.props.navigation.navigate('ExpLive', {url: result.url});
           },
         },
       ],

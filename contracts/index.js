@@ -14,6 +14,7 @@ export const ticketFactoryContract = async () => {
   try {
     console.log('get signer');
     const signer = await getSigner();
+    console.log(signer);
     let contract = await new ethers.Contract(
       addresses.ticketFactory,
       abis.ticketFactory,
@@ -42,8 +43,6 @@ export const xpContract = async () => {
 export const createTicket = async (props, templateIndex, saveTemplate) => {
   try {
     const ticketFactoryInst = await ticketFactoryContract();
-
-    console.log(ticketFactoryInst);
 
     ticketFactoryInst.on(
       'TicketCreated',
@@ -77,8 +76,6 @@ export const createTicket = async (props, templateIndex, saveTemplate) => {
     return;
   }
 };
-// ^ this over here uses ChainLink and generates the QR Code
-// it is the most important bit for this hackathon
 
 // TODO: need events in the smart contract
 
