@@ -20,7 +20,6 @@ import Cooking from '../assets/cooking.png';
 import CalendarPicker from 'react-native-calendar-picker';
 import DatePicker from 'react-native-date-picker';
 import Coins from '../assets/coins.png';
-import {createTicket} from '../contracts';
 import {connect} from 'react-redux';
 import {mapStateToProps} from '../tools/util';
 import {createExperience} from '../actions/experience';
@@ -92,17 +91,11 @@ class CreateRequest extends React.Component {
 
             let result = this.props.createExperience(params);
 
-            return;
-
             //ToDo: create experience and save to blockchain
             console.log('check');
+
             console.log(this.props.wallet.address);
-            await createTicket({
-              duration: 1,
-              title: 'test',
-              description: 'test description',
-              accountSendingFrom: this.props.wallet.address,
-            });
+
             this.props.navigation.navigate('ExpLive');
           },
         },
@@ -125,7 +118,11 @@ class CreateRequest extends React.Component {
         {this.state.step == 1 ? (
           <View>
             <View style={{flexDirection: 'row'}}>
-              <Icon name="ios-arrow-back" size={30} onPress={this.props.navigation.goBack()}/>
+              <Icon
+                name="ios-arrow-back"
+                size={30}
+                onPress={() => this.props.navigation.goBack()}
+              />
               <Text
                 style={{
                   fontSize: 25,

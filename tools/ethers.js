@@ -7,8 +7,7 @@ import '@ethersproject/shims';
 // Import the ethers library
 import {ethers} from 'ethers';
 import {Web3HttpProvider, OpenGSN} from '@react-native-anywhere/anywhere';
-
-import Wallet from '../constants/Wallet';
+import {store} from '../store';
 
 const {
   RelayProvider: {RelayProvider},
@@ -54,7 +53,13 @@ async function getSigner() {
 
     const provider = new ethers.providers.Web3Provider(gsnProvider);
 
-    return new ethers.Wallet(Wallet.privateKey).connect(provider);
+    const {wallet} = store.getState();
+
+    if (wallet.privateKey) {
+      return new ethers.Wallet(wallet.privateKey).connect(provider);
+    } else {
+      return null;
+    }
   } catch (err) {
     console.log('error:');
     console.log(err);
