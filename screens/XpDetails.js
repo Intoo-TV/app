@@ -48,7 +48,7 @@ export default class XpDetails extends Component {
   render() {
     return (
       <ScrollView style={{paddingTop: '5%', backgroundColor: '#FFF', flex: 1}}>
-        <Header />
+        <Header navigation={this.props.navigation} />
 
         <View style={{alignSelf: 'center', paddingTop: '10%'}}>
           <View

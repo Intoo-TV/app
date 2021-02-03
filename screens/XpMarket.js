@@ -179,7 +179,7 @@ export default class XpMarket extends Component {
   render() {
     return (
       <ScrollView style={{flex: 1, paddingTop: '5%', backgroundColor: '#FFF'}}>
-        <Header />
+        <Header navigation={this.props.navigation} />
 
         <View
           style={{

@@ -71,6 +71,7 @@ export function signup(email, password) {
 
 export function logout() {
   return function (dispatch, getState) {
+    RootNavigation.navigate('Login');
     return dispatch(doLogOut());
   };
 }

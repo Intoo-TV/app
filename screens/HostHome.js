@@ -291,7 +291,7 @@ export default class HostHome extends Component {
   render() {
     return (
       <ScrollView style={{flex: 1, paddingTop: '5%', backgroundColor: '#FFF'}}>
-        <Header />
+        <Header navigation={this.props.navigation} />
         <Text
           style={styles.heading}
           onPress={() => this.props.navigation.navigate('XpCabin')}>

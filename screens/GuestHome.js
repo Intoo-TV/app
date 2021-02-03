@@ -94,7 +94,7 @@ class GuestHome extends Component {
     return (
       <SafeAreaView
         style={{flex: 1, paddingTop: '5%', backgroundColor: '#FFF'}}>
-        <Header />
+        <Header navigation={this.props.navigation} />
         <Text style={styles.heading}>Past Experiences</Text>
         <View
           style={{
