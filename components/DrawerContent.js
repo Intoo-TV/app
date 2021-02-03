@@ -1,7 +1,7 @@
 import React from 'react';
-import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
+import {DrawerContentScrollView} from '@react-navigation/drawer';
 import {View, TouchableOpacity} from 'react-native';
-import {Avatar, Icon, Image, Text} from 'react-native-elements';
+import {Icon, Text} from 'react-native-elements';
 import {logout} from '../actions/auth';
 import {connect} from 'react-redux';
 import {mapStateToProps} from '../tools/util';
@@ -28,11 +28,6 @@ const Item = (props) => {
           {props.text}
         </Text>
       </TouchableOpacity>
-      {/*<DrawerItem*/}
-      {/*  label={props.text}*/}
-      {/*  onPress={props.onPress}*/}
-      {/*  labelStyle={{color: 'black'}}*/}
-      {/*/>*/}
     </View>
   );
 };
