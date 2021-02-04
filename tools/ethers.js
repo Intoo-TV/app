@@ -8,13 +8,14 @@ import '@ethersproject/shims';
 import {ethers} from 'ethers';
 import {Web3HttpProvider, OpenGSN} from '@react-native-anywhere/anywhere';
 import {store} from '../store';
+import addresses from '../contracts/addresses';
 
 const {
   RelayProvider: {RelayProvider},
   GSNConfigurator,
 } = OpenGSN;
 
-const httpProvider = new Web3HttpProvider('https://rpc-mainnet.maticvigil.com');
+const httpProvider = new Web3HttpProvider('https://rpc-mumbai.maticvigil.com/');
 
 async function getSigner() {
   const config = {
@@ -31,11 +32,9 @@ async function getSigner() {
   };
 
   const conf = {
-    ourContract: '0xe96202bBd148A7D512b29F32a251A02d592Fe94b',
-    paymaster: '0xF1B18608F814CDA7Cac8d9270226019FeD7a5DCF',
+    ourContract: addresses.ticketFactory,
+    paymaster: addresses.paymaster,
     gasPrice: 20000000000, // 20 Gwei
-    chainId: '137',
-    networkId: '137',
     verbose: true,
     loggerConfiguration: {
       logLevel: 'debug',
