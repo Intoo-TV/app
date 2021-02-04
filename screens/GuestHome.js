@@ -49,6 +49,7 @@ class GuestHome extends Component {
 
   async componentDidMount() {
     console.log(store.getState());
+    await getExperiencesByAddress();
   }
 
   _renderItem({item, index}) {

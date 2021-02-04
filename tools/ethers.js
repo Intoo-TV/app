@@ -9,13 +9,15 @@ import {ethers} from 'ethers';
 import {Web3HttpProvider, OpenGSN} from '@react-native-anywhere/anywhere';
 import {store} from '../store';
 import addresses from '../contracts/addresses';
+import {MATICVIGIL_KEY} from '@env';
 
 const {
   RelayProvider: {RelayProvider},
   GSNConfigurator,
 } = OpenGSN;
-
-const httpProvider = new Web3HttpProvider('https://rpc-mumbai.maticvigil.com/');
+const httpProvider = new Web3HttpProvider(
+  `https://rpc-mumbai.maticvigil.com/v1/${MATICVIGIL_KEY}`,
+);
 
 async function getSigner() {
   const config = {
@@ -49,10 +51,9 @@ async function getSigner() {
     // console.log('gsnprovider');
     // console.log(gsnProvider);
 
-    const provider = await new ethers.providers.Web3Provider(gsnProvider);
+    const provider = await new ethers.providers.Web3Provider(httpProvider);
 
     const {wallet} = store.getState();
-    console.log(wallet);
     if (wallet.privateKey) {
       return await new ethers.Wallet(wallet.privateKey).connect(provider);
     } else {

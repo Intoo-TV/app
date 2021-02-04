@@ -12,9 +12,7 @@ const TOO_MUCH = 42000000000;
 // ! else, .call();
 export const ticketFactoryContract = async () => {
   try {
-    console.log('get signer');
     const signer = await getSigner();
-    console.log(signer);
     let contract = await new ethers.Contract(
       addresses.ticketFactory,
       abis.ticketFactory,
@@ -44,12 +42,14 @@ export const createTicket = async (props, templateIndex, saveTemplate) => {
   try {
     const ticketFactoryInst = await ticketFactoryContract();
 
-    ticketFactoryInst.on(
+    ticketFactoryInst.once(
       'TicketCreated',
       (ticketId, ticketCreator, props, templateIndex) => {
         console.log('Ticket created!');
         console.log(ticketId);
         console.log(props);
+
+        //ToDo: send ticketId to backend and add ticket to store
       },
     );
 
