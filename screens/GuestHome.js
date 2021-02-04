@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
-import {Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Carousel from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -95,48 +102,49 @@ class GuestHome extends Component {
       <SafeAreaView
         style={{flex: 1, paddingTop: '5%', backgroundColor: '#FFF'}}>
         <Header navigation={this.props.navigation} />
-        <Text style={styles.heading}>Past Experiences</Text>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginTop: '5%',
-          }}>
-          <Carousel
-            layout={'default'}
-            ref={(ref) => (this.carousel = ref)}
-            data={this.state.carouselItems}
-            sliderWidth={250}
-            itemWidth={170}
-            layoutCardOffset={10}
-            renderItem={this._renderItem}
-            activeSlideOffset={-10}
-            onSnapToItem={(index) => this.setState({activeIndex: index})}
-          />
-        </View>
+        <ScrollView>
+          <Text style={styles.heading}>Past Experiences</Text>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'center',
+              marginTop: '5%',
+            }}>
+            <Carousel
+              layout={'default'}
+              ref={(ref) => (this.carousel = ref)}
+              data={this.state.carouselItems}
+              sliderWidth={250}
+              itemWidth={170}
+              layoutCardOffset={10}
+              renderItem={this._renderItem}
+              activeSlideOffset={-10}
+              onSnapToItem={(index) => this.setState({activeIndex: index})}
+            />
+          </View>
 
-        <Text style={styles.heading}>Recommended for you</Text>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginTop: '5%',
-          }}>
-          <Carousel
-            layout={'default'}
-            ref={(ref) => (this.carousel = ref)}
-            data={this.state.carouselItems}
-            sliderWidth={250}
-            itemWidth={170}
-            layoutCardOffset={10}
-            renderItem={this._renderItem}
-            activeSlideOffset={-10}
-            onSnapToItem={(index) => this.setState({activeIndex: index})}
-          />
-        </View>
-
+          <Text style={styles.heading}>Recommended for you</Text>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'center',
+              marginTop: '5%',
+            }}>
+            <Carousel
+              layout={'default'}
+              ref={(ref) => (this.carousel = ref)}
+              data={this.state.carouselItems}
+              sliderWidth={250}
+              itemWidth={170}
+              layoutCardOffset={10}
+              renderItem={this._renderItem}
+              activeSlideOffset={-10}
+              onSnapToItem={(index) => this.setState({activeIndex: index})}
+            />
+          </View>
+        </ScrollView>
         <View
           style={{
             alignSelf: 'center',
@@ -145,6 +153,8 @@ class GuestHome extends Component {
             borderRadius: 10,
             paddingBottom: 30,
             marginBottom: -10,
+            bottom: 0,
+            position: 'absolute',
           }}>
           <Text style={styles.start}>Start</Text>
           <TouchableOpacity
