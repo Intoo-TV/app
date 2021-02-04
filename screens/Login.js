@@ -15,10 +15,13 @@ class Login extends React.Component {
     password: '',
   };
 
-  render() {
+  componentDidMount() {
     if (this.props.auth.loggedIn) {
       this.props.navigation.navigate('Option');
     }
+  }
+
+  render() {
     return (
       <View style={styles.container}>
         <Image
