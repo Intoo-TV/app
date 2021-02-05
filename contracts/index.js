@@ -60,7 +60,7 @@ export const createTicket = async (props, templateIndex, saveTemplate) => {
       saveTemplate,
     );
 
-    console.log(ethers.utils.formatEther(estimateGas));
+    console.log('gas estimate:' + estimateGas.toString() + ' GWEI');
 
     let ticket = await ticketFactoryInst.createTicket(
       props,
@@ -125,4 +125,21 @@ export const createAccessToEvent = async (
       host,
     )
     .send({from: accountSendingFrom});
+};
+
+export const getExperiencesByAddress = async () => {
+  const ticketFactoryInst = await ticketFactoryContract();
+  try {
+    // let filter = ticketFactoryInst.filters.TicketCreated(null);
+    // let experiences = await ticketFactoryInst.queryFilter(filter, 0, 'latest');
+    // console.log(experiences);
+    let balance = await ticketFactoryInst.balanceOf(
+      '0x1a3E496f93474ad09990aa1AB317ffD6405D832e',
+    );
+    console.log(balance);
+    let owner = await ticketFactoryInst.tokenURI(2);
+    console.log(owner);
+  } catch (err) {
+    console.log(err);
+  }
 };

@@ -14,6 +14,7 @@ import Header from '../components/Header';
 import {connect} from 'react-redux';
 import {mapStateToProps} from '../tools/util';
 import {store} from '../store';
+import {getExperiencesByAddress} from '../contracts';
 
 class GuestHome extends Component {
   constructor(props) {
