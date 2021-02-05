@@ -73,7 +73,7 @@ export const createTicket = async (props, templateIndex, saveTemplate) => {
   } catch (err) {
     console.log('error');
     console.log(err);
-    return;
+    return false;
   }
 };
 

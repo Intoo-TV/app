@@ -9,7 +9,6 @@ async function createExperienceJson(params, token) {
 export function createExperience(params, templateIndex = -1) {
   return function (dispatch, getState) {
     let {token} = getState().auth;
-    let {address} = getState().wallet;
     return createExperienceJson(params, token).then(async (json) => {
       if (json && !json.error) {
         console.log(json);
@@ -22,13 +21,12 @@ export function createExperience(params, templateIndex = -1) {
           params.properties.isTemplate,
         );
 
-        console.log('ticket');
-        console.log(ticket);
-
-        // go to QR code screen
-        // if (ticket) {
-        RootNavigation.navigate('ExpLive', {url});
-        // }
+        if (ticket) {
+          // go to QR code screen
+          RootNavigation.navigate('ExpLive', {url});
+        } else {
+          //ToDo: show error
+        }
         return;
       } else {
         // dispatch(addAlert('error', '', json.error));
