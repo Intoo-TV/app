@@ -89,14 +89,7 @@ class CreateRequest extends React.Component {
               },
             };
 
-            let result = this.props.createExperience(params);
-
-            //ToDo: create experience and save to blockchain
-            console.log('check');
-
-            console.log(this.props.wallet.address);
-
-            this.props.navigation.navigate('ExpLive', {url: result.url});
+            this.props.createExperience(params);
           },
         },
       ],

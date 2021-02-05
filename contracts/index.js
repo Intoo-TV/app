@@ -44,12 +44,12 @@ export const createTicket = async (props, templateIndex, saveTemplate) => {
 
     ticketFactoryInst.once(
       'TicketCreated',
-      (ticketId, ticketCreator, props, templateIndex) => {
+      async (ticketId, ticketCreator, props, templateIndex) => {
         console.log('Ticket created!');
         console.log(ticketId);
         console.log(props);
 
-        //ToDo: send ticketId to backend and add ticket to store
+        //ToDo: send ticket to backend
       },
     );
 
@@ -86,45 +86,65 @@ export const createTicket = async (props, templateIndex, saveTemplate) => {
  * is interested in
  * @param host - the address of the person interested in hosting the event
  */
-export const createAccessToEvent = async (
-  web3,
-  tokenId,
-  host,
-  accountSendingFrom,
-) => {
-  // can only be invoked after createTicket
-  // ^ you need to pass an id when you do this
-  // and if that id does not exist, you won't be
-  // able to create. we can get ddosed with this
-  // so need another check in the contract
-  // but it is reentrancy guarded
-  // I don't know I have slept very little in the past
-  // three days. I am not thinking straight now
+export const createAccessToEvent = async (ticketId, props, host) => {
+  try {
+    const ticketFactoryInst = await ticketFactoryContract();
 
-  // Sam, you can use the template above to implement this
-  // you won't need everything, though
+    ticketFactoryInst.once(
+      'ExperienceMatchingCreated',
+      async (
+        ticketId,
+        host,
+        guest,
+        hostExperienceAccessId,
+        guestExperienceAccessId,
+      ) => {
+        console.log('Experience matched');
+        console.log(ticketId);
+        console.log(host);
+        console.log(guest);
+        console.log(hostExperienceAccessId);
+        console.log(guestExperienceAccessId);
 
-  const xpInst = xpContract(web3);
-  const ticketFactoryInst = ticketFactoryContract(web3);
+        //ToDo: update ticket to backend
+      },
+    );
 
-  // TODO: that Math.random() is BAD. we will change it later
-  // 1. to create a ticket, a GUEST clicks create (after filling  in
-  // the details on the app). Params such as date, duration, etc. are passed
-  // down into this function
-  // --- we need to ensure that the user has approved our contract
-  // for their XP spending
-  const approveReceipt = await xpContract.methods
-    .approve(addresses.ticketFactory, String(TOO_MUCH * 1e18))
-    .send({from: accountSendingFrom});
-
-  // 2. call createAccessToEvent()
-  const accessNfts = await xpContract.methods
-    .createAccessToEvent(
-      tokenId,
-      'ipfs://we-have-stored-other-meta-here.json',
+    let ticket = await ticketFactoryInst.createAccessToEvent(
+      ticketId,
+      props,
       host,
-    )
-    .send({from: accountSendingFrom});
+    );
+    console.log('XP Ticket created');
+    console.log(ticket);
+    return ticket;
+  } catch (err) {
+    console.log('error');
+    console.log(err);
+    return false;
+  }
+};
+
+export const expireExperience = async (ticketId) => {
+  try {
+    const ticketFactoryInst = await ticketFactoryContract();
+
+    ticketFactoryInst.once('ExperienceEnded', (ticketId) => {
+      console.log('Experience ended');
+      console.log(ticketId);
+
+      //ToDo: update backend
+    });
+
+    let ticket = await ticketFactoryInst.expireExperience(ticketId);
+    console.log('Expired experience');
+    console.log(ticket);
+    return ticket;
+  } catch (err) {
+    console.log('error');
+    console.log(err);
+    return false;
+  }
 };
 
 export const getExperiencesByAddress = async () => {
