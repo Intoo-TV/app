@@ -3,6 +3,8 @@ import {
   PROFILE_SUCCESS,
   PROFILE_FAILURE,
   UPDATE_PROFILE_REQUEST,
+  UPDATE_PROFILE_SUCCESS,
+  UPDATE_PROFILE_FAILURE,
 } from '../constants/Actions';
 import {getWithAuth, putWithAuth} from '../tools/util';
 import * as RootNavigation from '../RootNavigation';
@@ -56,8 +58,13 @@ export function updateProfile(nickname, interests, favoritePlaces) {
     let {token} = getState().auth;
     return updateProfileJson(nickname, interests, favoritePlaces, token).then(
       (json) => {
-        dispatch(getProfile());
-        RootNavigation.navigate('ProfileComplete');
+        if (json && !json.error) {
+          dispatch({type: UPDATE_PROFILE_SUCCESS, data: json});
+          dispatch(getProfile());
+          RootNavigation.navigate('ProfileComplete');
+        } else {
+          dispatch({type: UPDATE_PROFILE_FAILURE, data: json});
+        }
       },
     );
   };

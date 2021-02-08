@@ -15,7 +15,13 @@ const persistConfig = {
   stateReconciler: autoMergeLevel2,
   version: 1,
   debug: true,
-  whitelist: ['auth', 'profile', 'wallet'],
+  whitelist: [
+    'auth',
+    'profile',
+    'wallet',
+    'upcomingExperiences',
+    'pastExperiences',
+  ],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
