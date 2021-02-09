@@ -63,7 +63,13 @@ class XpMarket extends Component {
               color={'#000'}
               style={{alignSelf: 'baseline'}}></Icon>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('XpDetails')}>
+              onPress={() =>
+                this.props.navigation.navigate('XpDetails', {
+                  experience: this.props.upcomingExperiences[
+                    this.state.activeIndex
+                  ],
+                })
+              }>
               <Image
                 source={require('../assets/logob.png')}
                 style={{

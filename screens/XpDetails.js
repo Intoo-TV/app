@@ -10,44 +10,14 @@ export default class XpDetails extends Component {
     super(props);
     this.state = {
       activeIndex: 0,
-      carouselItems: [
-        {
-          title: 'Alex P.',
-          text: 'Experience Title',
-          description:
-            'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo.',
-        },
-        {
-          title: 'Alex P.',
-          text: 'Experience Title',
-          description:
-            'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo.',
-        },
-        {
-          title: 'Alex P.',
-          text: 'Experience Title',
-          description:
-            'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo.',
-        },
-        {
-          title: 'Alex P.',
-          text: 'Experience Title',
-          description:
-            'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo.',
-        },
-        {
-          title: 'Alex P.',
-          text: 'Experience Title',
-          description:
-            'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo.',
-        },
-      ],
     };
   }
 
   render() {
+    let {experience} = this.props.route.params;
+    console.log(experience);
     return (
-      <ScrollView style={{paddingTop: '5%', backgroundColor: '#FFF', flex: 1}}>
+      <ScrollView style={{paddingTop: 20, backgroundColor: '#FFF', flex: 1}}>
         <Header navigation={this.props.navigation} />
 
         <View style={{alignSelf: 'center', paddingTop: '10%'}}>
@@ -93,7 +63,7 @@ export default class XpDetails extends Component {
                     color: '#000',
                     fontWeight: 'bold',
                   }}>
-                  Alex P.
+                  {experience.name}
                 </Text>
               </View>
 
@@ -105,15 +75,12 @@ export default class XpDetails extends Component {
                   fontWeight: 'bold',
                   fontSize: 20,
                 }}>
-                Experience Title
+                {experience.title}
               </Text>
 
               <ScrollView
                 style={{
-                  flexWrap: 'wrap',
                   flexDirection: 'column',
-                  width: '95%',
-                  height: '40%',
                 }}>
                 <Text
                   style={{
@@ -122,25 +89,7 @@ export default class XpDetails extends Component {
                     color: '#000',
                     fontSize: 15,
                   }}>
-                  Card flips and expands showing all the information about the
-                  job. The information scrolls inside the card Lorem ipsum dolor
-                  sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
-                  tempor invidunt ut labore et dolore magna aliquyam erat, sed
-                  diam voluptua. At vero eos et accusam et justo duo dolores et
-                  ea rebum. Stet clita kasd gubergren, no sea takimata sanctus
-                  est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
-                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                  diam nonumy eirmod tempor invidunt ut labore et dolore magna
-                  aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                  justo duo dolores et ea rebum. Stet clita kasd gubergren, no
-                  sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem
-                  ipsum dolor sit amet. Consetetur sadipscing elitr, sed diam
-                  nonumy eirmod tempor invidunt ut labore et dolore magna
-                  aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                  justo duo dolores et ea rebum. Stet clita kasd gubergren, no
-                  sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem
-                  ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                  nonumy eirmod.
+                  {experience.description}
                 </Text>
               </ScrollView>
 
@@ -206,7 +155,7 @@ export default class XpDetails extends Component {
             textAlign: 'center',
             color: '#000',
             fontFamily: 'Roboto',
-            marginTop: 0,
+            marginTop: 20,
             padding: 20,
             width: '70%',
             borderWidth: 2,
@@ -216,7 +165,9 @@ export default class XpDetails extends Component {
             borderLeftColor: '#FFF',
             borderRightColor: '#FFF',
           }}
-          onPress={() => this.props.navigation.navigate('XpCalendar')}>
+          onPress={() =>
+            this.props.navigation.navigate('XpCalendar', {experience})
+          }>
           Let's do it
         </Text>
       </ScrollView>

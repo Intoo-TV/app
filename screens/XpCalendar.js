@@ -1,25 +1,24 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  ScrollView,
-  Dimensions,
-} from 'react-native';
+import {StyleSheet, Text, View, ScrollView, Dimensions} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-
-import {TextInput} from 'react-native-gesture-handler';
 import CalendarPicker from 'react-native-calendar-picker';
 import DatePicker from 'react-native-date-picker';
 
 export default class XpCalendar extends React.Component {
   constructor(props) {
     super(props);
+    let {experience} = props.route.params;
     this.state = {
-      selectedStartDate: null,
-      start: new Date(),
-      end: new Date(),
+      selectedStartDate: experience && experience.date ? experience.date : null,
+      start:
+        experience && experience.startTime
+          ? new Date(experience.startTime)
+          : new Date(),
+      end:
+        experience && experience.endTime
+          ? new Date(experience.endTime)
+          : new Date(),
+      experience: props.route.params.experience,
     };
     this.onDateChange = this.onDateChange.bind(this);
     this.onTimeChange = this.onTimeChange.bind(this);
@@ -54,7 +53,6 @@ export default class XpCalendar extends React.Component {
 
   render() {
     const {selectedStartDate} = this.state;
-    const startDate = selectedStartDate ? selectedStartDate.toString() : '';
     return (
       <ScrollView style={styles.container}>
         <View style={{flexDirection: 'row'}}>
@@ -155,29 +153,29 @@ export default class XpCalendar extends React.Component {
           Hereby you accept Intoo Terms and conditions{' '}
         </Text>
 
-        {this.state.start == null && (
-          <Text
-            style={{
-              position: 'relative',
-              fontSize: 20,
-              textAlign: 'center',
-              color: '#000',
-              fontFamily: 'Roboto',
-              marginTop: '2.5%',
-              padding: '3%',
-              width: '70%',
-              borderWidth: 2,
-              alignSelf: 'center',
-              borderTopColor: '#000',
-              borderBottomColor: '#000',
-              borderLeftColor: '#FFF',
-              borderRightColor: '#FFF',
-              textAlignVertical: 'center',
-            }}
-            onPress={() => this.props.navigation.navigate('Places')}>
-            Accept
-          </Text>
-        )}
+        {/*{this.state.start == null && (*/}
+        {/*  <Text*/}
+        {/*    style={{*/}
+        {/*      position: 'relative',*/}
+        {/*      fontSize: 20,*/}
+        {/*      textAlign: 'center',*/}
+        {/*      color: '#000',*/}
+        {/*      fontFamily: 'Roboto',*/}
+        {/*      marginTop: '2.5%',*/}
+        {/*      padding: '3%',*/}
+        {/*      width: '70%',*/}
+        {/*      borderWidth: 2,*/}
+        {/*      alignSelf: 'center',*/}
+        {/*      borderTopColor: '#000',*/}
+        {/*      borderBottomColor: '#000',*/}
+        {/*      borderLeftColor: '#FFF',*/}
+        {/*      borderRightColor: '#FFF',*/}
+        {/*      textAlignVertical: 'center',*/}
+        {/*    }}*/}
+        {/*    onPress={() => this.props.navigation.navigate('Places')}>*/}
+        {/*    Accept*/}
+        {/*  </Text>*/}
+        {/*)}*/}
         {this.state.start != null && (
           <Text
             style={{
@@ -198,7 +196,11 @@ export default class XpCalendar extends React.Component {
               borderRightColor: '#FFF',
               textAlignVertical: 'center',
             }}
-            onPress={() => this.props.navigation.navigate('Budget')}>
+            onPress={() =>
+              this.props.navigation.navigate('Budget', {
+                experience: this.state.experience,
+              })
+            }>
             Accept
           </Text>
         )}

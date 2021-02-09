@@ -11,12 +11,21 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Card from '../components/Card';
 
 import Coins from '../assets/coins.png';
+import {createAccessToEvent} from '../contracts';
+import {connect} from 'react-redux';
+import {mapStateToProps} from '../tools/util';
 
-export default class Budget extends React.Component {
-  state = {
-    selectedBudget: 3,
-  };
-  ConfirmXP = () =>
+class Budget extends React.Component {
+  constructor(props) {
+    super(props);
+    let {experience} = this.props.route.params;
+    this.state = {
+      selectedBudget: experience.budget ? experience.budget : 0,
+      experience,
+    };
+  }
+
+  ConfirmXP = async () =>
     Alert.alert(
       'Confirm',
       'Are you sure?',
@@ -28,9 +37,14 @@ export default class Budget extends React.Component {
         },
         {
           text: 'OK',
-          onPress: () => {
+          onPress: async () => {
             console.log('Submitted');
-            this.props.navigation.navigate('ExpLive');
+            await createAccessToEvent(
+              this.state.experience.tokenID,
+              this.state.experience.url,
+              this.props.wallet.address,
+            );
+            // this.props.navigation.navigate('ExpLive');
           },
         },
       ],
@@ -67,25 +81,25 @@ export default class Budget extends React.Component {
             alignContent: 'center',
             justifyContent: 'center',
           }}>
-          <TouchableOpacity onPress={() => this.setState({selectedBudget: 2})}>
+          <TouchableOpacity onPress={() => this.setState({selectedBudget: 0})}>
             <Card
-              selected={this.state.selectedBudget == 2}
+              selected={this.state.selectedBudget == 0}
               name="2 mins"
               icon={Coins}
             />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => this.setState({selectedBudget: 5})}>
+          <TouchableOpacity onPress={() => this.setState({selectedBudget: 1})}>
             <Card
-              selected={this.state.selectedBudget == 5}
+              selected={this.state.selectedBudget == 1}
               name="5 mins"
               icon={Coins}
             />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => this.setState({selectedBudget: 10})}>
+          <TouchableOpacity onPress={() => this.setState({selectedBudget: 2})}>
             <Card
-              selected={this.state.selectedBudget == 10}
+              selected={this.state.selectedBudget == 2}
               name="10 mins"
               icon={Coins}
             />
@@ -142,3 +156,4 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
 });
+export default connect(mapStateToProps, {})(Budget);
