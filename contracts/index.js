@@ -2,6 +2,8 @@ import abis from './abis';
 import addresses from './addresses';
 
 import {ethers, getSigner} from '../tools/ethers';
+import {AddTokenToExperience} from '../actions/experience';
+import {store} from '../store/index';
 
 const TOO_MUCH = 42000000000;
 
@@ -46,10 +48,12 @@ export const createTicket = async (props, templateIndex, saveTemplate) => {
       'TicketCreated',
       async (ticketId, ticketCreator, props, templateIndex) => {
         console.log('Ticket created!');
-        console.log(ticketId);
+        console.log(ticketId.toString());
         console.log(props);
 
         //ToDo: send ticket to backend
+        console.log('Send token to backend');
+        store.dispatch(AddTokenToExperience(ticketId.toString(), props));
       },
     );
 
@@ -157,7 +161,7 @@ export const getExperiencesByAddress = async () => {
       '0x1a3E496f93474ad09990aa1AB317ffD6405D832e',
     );
     console.log(balance);
-    let owner = await ticketFactoryInst.tokenURI(2);
+    let owner = await ticketFactoryInst.tokenURI(22);
     console.log(owner);
   } catch (err) {
     console.log(err);

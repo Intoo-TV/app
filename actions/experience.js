@@ -1,4 +1,4 @@
-import {getWithAuth, postWithAuth} from '../tools/util';
+import {getExternal, getWithAuth, postWithAuth} from '../tools/util';
 import {createTicket} from '../contracts';
 import * as RootNavigation from '../RootNavigation';
 import {
@@ -56,23 +56,25 @@ export function createExperience(params, templateIndex = -1) {
   };
 }
 
-async function addTokenToExperienceJson(tokenId, url, token) {
-  let params = {tokenId, url};
-  return postWithAuth(`experience/token/`, params, token);
+async function addTokenToExperienceJson(tokenID, url, token) {
+  let params = {tokenID, url};
+  return postWithAuth(`experience/tokenID`, params, token);
 }
 
-export function AddTokenToExperience(tokenId, url) {
+export function AddTokenToExperience(tokenID, url) {
+  console.log('add token to experience');
   return function (dispatch, getState) {
     dispatch({type: EXPERIENCE_TOKEN_ADD});
     let {token} = getState().auth;
-    return addTokenToExperienceJson(tokenId, url, token).then((json) => {
+    return addTokenToExperienceJson(tokenID, url, token).then((json) => {
+      console.log(json);
       if (json && !json.error) {
         dispatch({type: EXPERIENCE_TOKEN_ADD_SUCCESS});
         return true;
       } else {
         dispatch({type: EXPERIENCE_TOKEN_ADD_FAILURE});
         // dispatch(addAlert('error', '', json.error));
-        console.log(json.error);
+        console.log(json);
         return false;
       }
     });
@@ -103,8 +105,6 @@ export function expireToken(tokenId) {
 }
 
 function receiveUpcomingExperiences(data) {
-  console.log(data);
-
   return {
     type: !data.error
       ? RECEIVE_UPCOMING_EXPERIENCES_SUCCESS
@@ -114,7 +114,7 @@ function receiveUpcomingExperiences(data) {
 }
 
 async function fetchUpcomingExperiencesJson(token) {
-  let result = await getWithAuth(`experience?future=true`, token);
+  let result = await getWithAuth(`experience?past=false`, token);
   if (result && !result.error) {
     return result;
   } else {
@@ -126,15 +126,32 @@ export function getUpcomingExperiences() {
   return function (dispatch, getState) {
     dispatch({type: RECEIVE_UPCOMING_EXPERIENCES_REQUEST});
     let {token} = getState().auth;
-    return fetchUpcomingExperiencesJson(token).then((json) =>
-      dispatch(receiveUpcomingExperiences(json)),
-    );
+    return fetchUpcomingExperiencesJson(token).then(async (json) => {
+      let experiences = await collectExperienceDetails(json);
+      dispatch(receiveUpcomingExperiences(experiences));
+    });
   };
 }
 
-function receivePastExperiences(data) {
-  console.log(data);
+async function collectExperienceDetails(experienceData) {
+  let experiences = [];
+  if (experienceData.experiences) {
+    for (let i = 0; i < experienceData.experiences.length; i++) {
+      let experience = experienceData.experiences[i];
+      // console.log(experience);
+      let data = await getExperienceData(experience.url);
+      // console.log(data);
+      experiences.push({
+        title: data.title,
+        ...experience,
+        ...data.properties,
+      });
+    }
+  }
+  return experiences;
+}
 
+function receivePastExperiences(data) {
   return {
     type: !data.error
       ? RECEIVE_PAST_EXPERIENCES_SUCCESS
@@ -144,7 +161,7 @@ function receivePastExperiences(data) {
 }
 
 async function fetchPastExperiencesJson(token) {
-  let result = await getWithAuth(`experience?future=false`, token);
+  let result = await getWithAuth(`experience?past=true`, token);
   if (result && !result.error) {
     return result;
   } else {
@@ -156,8 +173,18 @@ export function getPastExperiences() {
   return function (dispatch, getState) {
     dispatch({type: RECEIVE_PAST_EXPERIENCES_REQUEST});
     let {token} = getState().auth;
-    return fetchPastExperiencesJson(token).then((json) =>
-      dispatch(receivePastExperiences(json)),
-    );
+    return fetchPastExperiencesJson(token).then(async (json) => {
+      let experiences = await collectExperienceDetails(json);
+      dispatch(receivePastExperiences(experiences));
+    });
   };
+}
+
+async function getExperienceData(url) {
+  let result = await getExternal(url);
+  if (result && !result.error) {
+    return result;
+  } else {
+    return false;
+  }
 }

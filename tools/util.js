@@ -57,6 +57,24 @@ export async function getWithAuth(action, token) {
     });
 }
 
+export async function getExternal(action) {
+  return fetch(action, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((responseJson) => {
+      return responseJson;
+    })
+    .catch((error) => {
+      console.log(error);
+      return null;
+    });
+}
+
 export async function post(action, params) {
   return fetch(API_ENDPOINT + action, {
     method: 'POST',

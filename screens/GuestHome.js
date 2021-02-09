@@ -14,43 +14,24 @@ import Header from '../components/Header';
 import {connect} from 'react-redux';
 import {mapStateToProps} from '../tools/util';
 import {store} from '../store';
-import {getExperiencesByAddress} from '../contracts';
+import {
+  getUpcomingExperiences,
+  getPastExperiences,
+} from '../actions/experience';
 
 class GuestHome extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      web3: undefined,
       acc: undefined,
       activeIndex: 0,
-      carouselItems: [
-        {
-          title: 'Experience',
-          text: "Maker's Name",
-        },
-        {
-          title: 'Item 2',
-          text: 'Text 2',
-        },
-        {
-          title: 'Item 3',
-          text: 'Text 3',
-        },
-        {
-          title: 'Item 4',
-          text: 'Text 4',
-        },
-        {
-          title: 'Item 5',
-          text: 'Text 5',
-        },
-      ],
     };
   }
 
   async componentDidMount() {
     console.log(store.getState());
-    await getExperiencesByAddress();
+    this.props.getPastExperiences();
+    this.props.getUpcomingExperiences();
   }
 
   _renderItem({item, index}) {
@@ -91,7 +72,7 @@ class GuestHome extends Component {
             <Text style={{fontSize: 20, marginLeft: 10, color: '#36A9E1'}}>
               {item.title}
             </Text>
-            <Text style={{marginLeft: 10, color: '#000'}}>{item.text}</Text>
+            <Text style={{marginLeft: 10, color: '#000'}}>{item.title}</Text>
           </View>
         </View>
         <Text style={{marginLeft: 10}}>Date-Time</Text>
@@ -110,20 +91,26 @@ class GuestHome extends Component {
             style={{
               flex: 1,
               flexDirection: 'row',
-              justifyContent: 'center',
+              justifyContent: 'flex-start',
               marginTop: '5%',
             }}>
-            <Carousel
-              layout={'default'}
-              ref={(ref) => (this.carousel = ref)}
-              data={this.state.carouselItems}
-              sliderWidth={250}
-              itemWidth={170}
-              layoutCardOffset={10}
-              renderItem={this._renderItem}
-              activeSlideOffset={-10}
-              onSnapToItem={(index) => this.setState({activeIndex: index})}
-            />
+            {this.props.pastExperiences.length > 0 ? (
+              <Carousel
+                layout={'default'}
+                ref={(ref) => (this.carousel = ref)}
+                data={this.props.pastExperiences}
+                sliderWidth={250}
+                itemWidth={170}
+                layoutCardOffset={10}
+                renderItem={this._renderItem}
+                activeSlideOffset={-10}
+                onSnapToItem={(index) => this.setState({activeIndex: index})}
+              />
+            ) : (
+              <Text style={{color: 'grey', margin: 20}}>
+                there are no past experiences available for now...
+              </Text>
+            )}
           </View>
 
           <Text style={styles.heading}>Recommended for you</Text>
@@ -131,20 +118,26 @@ class GuestHome extends Component {
             style={{
               flex: 1,
               flexDirection: 'row',
-              justifyContent: 'center',
+              justifyContent: 'flex-start',
               marginTop: '5%',
             }}>
-            <Carousel
-              layout={'default'}
-              ref={(ref) => (this.carousel = ref)}
-              data={this.state.carouselItems}
-              sliderWidth={250}
-              itemWidth={170}
-              layoutCardOffset={10}
-              renderItem={this._renderItem}
-              activeSlideOffset={-10}
-              onSnapToItem={(index) => this.setState({activeIndex: index})}
-            />
+            {this.props.upcomingExperiences.length > 0 ? (
+              <Carousel
+                layout={'default'}
+                ref={(ref) => (this.carousel = ref)}
+                data={this.props.upcomingExperiences}
+                sliderWidth={250}
+                itemWidth={170}
+                layoutCardOffset={10}
+                renderItem={this._renderItem}
+                activeSlideOffset={-10}
+                onSnapToItem={(index) => this.setState({activeIndex: index})}
+              />
+            ) : (
+              <Text style={{color: 'grey', margin: 20}}>
+                there are no upcoming experiences available for now...
+              </Text>
+            )}
           </View>
         </ScrollView>
         <View
@@ -198,4 +191,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps, {})(GuestHome);
+export default connect(mapStateToProps, {
+  getPastExperiences,
+  getUpcomingExperiences,
+})(GuestHome);

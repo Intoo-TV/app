@@ -1,343 +1,98 @@
 import React, {Component} from 'react';
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+} from 'react-native';
 
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Carousel from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/Entypo';
 import Header from '../components/Header';
+import {connect} from 'react-redux';
+import {mapStateToProps} from '../tools/util';
+import {
+  getPastExperiences,
+  getUpcomingExperiences,
+} from '../actions/experience';
+import HostPastExperienceCard from '../components/HostPastExperienceCard';
+import HostUpcomingExperienceCard from '../components/HostUpcomingExperienceCard';
 
-export default class HostHome extends Component {
+class HostHome extends Component {
   constructor(props) {
     super(props);
     this.state = {
       activeIndex: 0,
-      carouselItems: [
-        {
-          title: 'Alex P.',
-          text: 'Experience Title',
-          description:
-            'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo.',
-        },
-        {
-          title: 'Alex P.',
-          text: 'Experience Title',
-          description:
-            'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo.',
-        },
-        {
-          title: 'Alex P.',
-          text: 'Experience Title',
-          description:
-            'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo.',
-        },
-        {
-          title: 'Alex P.',
-          text: 'Experience Title',
-          description:
-            'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo.',
-        },
-        {
-          title: 'Alex P.',
-          text: 'Experience Title',
-          description:
-            'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo.',
-        },
-      ],
     };
   }
 
-  _renderItem({item, index}) {
-    return (
-      <View>
-        <View
-          style={{
-            borderColor: '#000',
-            borderWidth: 1,
-            borderRadius: 10,
-            width: 200,
-          }}>
-          <View
-            style={{
-              borderRadius: 10,
-              width: 200,
-              paddingBottom: 10,
-              marginLeft: 0,
-              marginRight: 10,
-              elevation: 3,
-              borderColor: '#000',
-              borderWidth: 0.1,
-              shadowRadius: 30,
-              backgroundColor: '#FFF',
-              shadowOffset: {width: 50, height: 50},
-              shadowColor: 'black',
-              shadowOpacity: 0.7,
-            }}>
-            <View style={{flexDirection: 'row'}}>
-              <Image
-                source={require('../assets/alex.jpg')}
-                style={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: 25,
-                  marginTop: '5%',
-                  marginLeft: '5%',
-                  borderColor: '#000',
-                  borderWidth: 1,
-                }}></Image>
-              <Text
-                style={{
-                  fontSize: 17.5,
-                  marginLeft: 10,
-                  marginTop: '10%',
-                  color: '#000',
-                  fontWeight: 'bold',
-                }}>
-                {item.title}
-              </Text>
-            </View>
-
-            <Text
-              style={{
-                marginLeft: '5%',
-                marginTop: '5%',
-                color: '#000',
-                fontWeight: 'bold',
-              }}>
-              {item.text}
-            </Text>
-            <Text style={{marginLeft: '5%', marginTop: '5%', color: '#000'}}>
-              {item.description}
-            </Text>
-            <View style={{flexDirection: 'row', marginTop: '5%'}}>
-              <Icon
-                name="database"
-                size={15}
-                color={'#000'}
-                style={{marginLeft: '5%'}}></Icon>
-              <Text
-                style={{
-                  fontSize: 15,
-                  marginLeft: 5,
-                  color: '#000',
-                  fontWeight: 'bold',
-                }}>
-                5 XP
-              </Text>
-              <Text
-                style={{
-                  fontSize: 10,
-                  marginLeft: 5,
-                  marginTop: 5,
-                  color: '#000',
-                  fontWeight: 'bold',
-                }}>
-                #Label
-              </Text>
-              <Text
-                style={{
-                  fontSize: 10,
-                  marginLeft: 5,
-                  marginTop: 5,
-                  color: '#000',
-                  fontWeight: 'bold',
-                }}>
-                #Label
-              </Text>
-              <Text
-                style={{
-                  fontSize: 10,
-                  marginLeft: 5,
-                  marginTop: 5,
-                  color: '#000',
-                  fontWeight: 'bold',
-                }}>
-                #Label
-              </Text>
-            </View>
-          </View>
-        </View>
-        <Text style={{marginLeft: 10, color: '#000', fontWeight: 'bold'}}>
-          Date-Time
-        </Text>
-      </View>
-    );
+  async componentDidMount() {
+    this.props.getPastExperiences();
+    this.props.getUpcomingExperiences();
   }
-
-  _renderCompletedItem({item, index}) {
-    return (
-      <View>
-        <View
-          style={{
-            borderColor: '#000',
-            borderWidth: 1,
-            borderRadius: 10,
-            width: 200,
-            backgroundColor: '#000',
-          }}>
-          <View
-            style={{
-              borderRadius: 10,
-              width: 200,
-              paddingBottom: 10,
-              marginLeft: 0,
-              marginRight: 10,
-              elevation: 3,
-              borderColor: '#000',
-              borderWidth: 0.1,
-              shadowRadius: 30,
-              backgroundColor: '#000',
-              shadowOffset: {width: 50, height: 50},
-              shadowColor: 'black',
-              shadowOpacity: 0.7,
-            }}>
-            <View style={{flexDirection: 'row'}}>
-              <Image
-                source={require('../assets/alex.jpg')}
-                style={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: 25,
-                  marginTop: '5%',
-                  marginLeft: '5%',
-                  borderColor: '#000',
-                  borderWidth: 1,
-                }}></Image>
-              <Text
-                style={{
-                  fontSize: 17.5,
-                  marginLeft: 10,
-                  marginTop: '10%',
-                  color: '#FFF',
-                  fontWeight: 'bold',
-                }}>
-                {item.title}
-              </Text>
-              <Icon
-                name="check"
-                size={35}
-                color={'#FFF'}
-                style={{marginLeft: '5%', marginTop: 25}}></Icon>
-            </View>
-
-            <Text
-              style={{
-                marginLeft: '5%',
-                marginTop: '5%',
-                color: '#FFF',
-                fontWeight: 'bold',
-              }}>
-              {item.text}
-            </Text>
-            <Text style={{marginLeft: '5%', marginTop: '5%', color: '#FFF'}}>
-              {item.description}
-            </Text>
-            <View style={{flexDirection: 'row', marginTop: '5%'}}>
-              <Icon
-                name="database"
-                size={15}
-                color={'#FFF'}
-                style={{marginLeft: '5%'}}></Icon>
-              <Text
-                style={{
-                  fontSize: 15,
-                  marginLeft: 5,
-                  color: '#FFF',
-                  fontWeight: 'bold',
-                }}>
-                5 XP
-              </Text>
-              <Text
-                style={{
-                  fontSize: 10,
-                  marginLeft: 5,
-                  marginTop: 5,
-                  color: '#FFF',
-                  fontWeight: 'bold',
-                }}>
-                #Label
-              </Text>
-              <Text
-                style={{
-                  fontSize: 10,
-                  marginLeft: 5,
-                  marginTop: 5,
-                  color: '#FFF',
-                  fontWeight: 'bold',
-                }}>
-                #Label
-              </Text>
-              <Text
-                style={{
-                  fontSize: 10,
-                  marginLeft: 5,
-                  marginTop: 5,
-                  color: '#FFF',
-                  fontWeight: 'bold',
-                }}>
-                #Label
-              </Text>
-            </View>
-          </View>
-        </View>
-        <Text
-          onPress={() => this.props.navigation.navigate('XpCabin')}
-          style={{marginLeft: 10, color: '#000', fontWeight: 'bold'}}>
-          Date-Time
-        </Text>
-      </View>
-    );
-  }
-
   render() {
     return (
-      <ScrollView style={{flex: 1, paddingTop: '5%', backgroundColor: '#FFF'}}>
+      <SafeAreaView
+        style={{flex: 1, paddingTop: '5%', backgroundColor: '#FFF'}}>
         <Header navigation={this.props.navigation} />
-        <Text
-          style={styles.heading}
-          onPress={() => this.props.navigation.navigate('XpCabin')}>
-          Coming Soon
-        </Text>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginTop: '5%',
-          }}>
-          <Carousel
-            layout={'default'}
-            ref={(ref) => (this.carousel = ref)}
-            data={this.state.carouselItems}
-            sliderWidth={250}
-            itemWidth={200}
-            layoutCardOffset={10}
-            renderItem={this._renderItem}
-            activeSlideOffset={-10}
-            onSnapToItem={(index) => this.setState({activeIndex: index})}
-          />
-        </View>
+        <ScrollView>
+          <Text style={styles.heading}>Coming Soon</Text>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'flex-start',
+              marginTop: '5%',
+            }}>
+            {this.props.upcomingExperiences.length > 0 ? (
+              <Carousel
+                layout={'default'}
+                ref={(ref) => (this.carousel = ref)}
+                data={this.props.upcomingExperiences}
+                sliderWidth={250}
+                itemWidth={200}
+                layoutCardOffset={10}
+                renderItem={(item) => HostUpcomingExperienceCard(item)}
+                activeSlideOffset={-10}
+                onSnapToItem={(index) => this.setState({activeIndex: index})}
+              />
+            ) : (
+              <Text style={{color: 'grey', margin: 20}}>
+                there are no upcoming experiences available for now...
+              </Text>
+            )}
+          </View>
 
-        <Text style={styles.heading}>Completed Experience</Text>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginTop: '5%',
-          }}>
-          <Carousel
-            layout={'default'}
-            ref={(ref) => (this.carousel = ref)}
-            data={this.state.carouselItems}
-            sliderWidth={250}
-            itemWidth={200}
-            layoutCardOffset={10}
-            renderItem={this._renderCompletedItem}
-            activeSlideOffset={-10}
-            onSnapToItem={(index) => this.setState({activeIndex: index})}
-          />
-        </View>
-
+          <Text style={styles.heading}>Completed Experience</Text>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'flex-start',
+              marginTop: '5%',
+            }}>
+            {this.props.pastExperiences.length > 0 ? (
+              <Carousel
+                layout={'default'}
+                ref={(ref) => (this.carousel = ref)}
+                data={this.props.pastExperiences}
+                sliderWidth={250}
+                itemWidth={200}
+                layoutCardOffset={10}
+                renderItem={(item) => HostPastExperienceCard(item)}
+                activeSlideOffset={-10}
+                onSnapToItem={(index) => this.setState({activeIndex: index})}
+              />
+            ) : (
+              <Text style={{color: 'grey', margin: 20}}>
+                there are no past experiences available for now...
+              </Text>
+            )}
+          </View>
+        </ScrollView>
         <View
           style={{
             alignSelf: 'center',
@@ -345,9 +100,11 @@ export default class HostHome extends Component {
             backgroundColor: '#000',
             borderRadius: 10,
             paddingBottom: 30,
-            paddingTop: 10,
             marginBottom: -10,
+            bottom: 0,
+            position: 'absolute',
           }}>
+          <Text style={styles.start}>Start</Text>
           <TouchableOpacity
             onPress={() => this.props.navigation.navigate('XpMarket')}>
             <Icon
@@ -357,7 +114,7 @@ export default class HostHome extends Component {
               style={{alignSelf: 'center'}}></Icon>
           </TouchableOpacity>
         </View>
-      </ScrollView>
+      </SafeAreaView>
     );
   }
 }
@@ -386,3 +143,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+export default connect(mapStateToProps, {
+  getPastExperiences,
+  getUpcomingExperiences,
+})(HostHome);

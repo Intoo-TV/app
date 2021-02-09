@@ -5,175 +5,21 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import Carousel from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/Entypo';
 import Header from '../components/Header';
+import {getUpcomingExperiences} from '../actions/experience';
+import {connect} from 'react-redux';
+import {mapStateToProps} from '../tools/util';
+import TinderCard from '../components/TinderCard';
 
-export default class XpMarket extends Component {
+class XpMarket extends Component {
   constructor(props) {
     super(props);
     this.state = {
       activeIndex: 0,
-      carouselItems: [
-        {
-          title: 'Alex P.',
-          text: 'Experience Title',
-          description:
-            'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo.',
-        },
-        {
-          title: 'Alex P.',
-          text: 'Experience Title',
-          description:
-            'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo.',
-        },
-        {
-          title: 'Alex P.',
-          text: 'Experience Title',
-          description:
-            'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo.',
-        },
-        {
-          title: 'Alex P.',
-          text: 'Experience Title',
-          description:
-            'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo.',
-        },
-        {
-          title: 'Alex P.',
-          text: 'Experience Title',
-          description:
-            'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo.',
-        },
-      ],
     };
   }
 
-  _renderItem({item, index}) {
-    return (
-      <View style={{alignSelf: 'center'}}>
-        <View
-          style={{
-            borderColor: '#000',
-            borderWidth: 1,
-            borderRadius: 10,
-            alignSelf: 'center',
-          }}>
-          <View
-            style={{
-              borderRadius: 10,
-              width: 325,
-              paddingBottom: 10,
-              marginLeft: 0,
-              marginRight: 10,
-              elevation: 3,
-              borderColor: '#000',
-              borderWidth: 0.1,
-              shadowColor: '#000',
-              shadowRadius: 30,
-              backgroundColor: '#FFF',
-              shadowOffset: {width: 50, height: 50},
-              shadowOpacity: 0.7,
-              alignSelf: 'center',
-            }}>
-            <View style={{flexDirection: 'row'}}>
-              <Image
-                source={require('../assets/alex.jpg')}
-                style={{
-                  width: 100,
-                  height: 100,
-                  borderRadius: 50,
-                  marginTop: '5%',
-                  marginLeft: '5%',
-                  borderColor: '#000',
-                  borderWidth: 1,
-                }}></Image>
-              <Text
-                style={{
-                  fontSize: 30,
-                  marginLeft: 10,
-                  marginTop: '15%',
-                  color: '#000',
-                  fontWeight: 'bold',
-                }}>
-                {item.title}
-              </Text>
-            </View>
-
-            <Text
-              style={{
-                marginLeft: '5%',
-                marginTop: '5%',
-                color: '#36A9E1',
-                fontWeight: 'bold',
-                fontSize: 20,
-              }}>
-              {item.text}
-            </Text>
-            <Text
-              style={{
-                marginLeft: '5%',
-                marginTop: '5%',
-                color: '#000',
-                fontSize: 15,
-                width: '90%',
-              }}>
-              {item.description}
-            </Text>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                marginTop: '5%',
-                alignSelf: 'center',
-              }}>
-              <Text
-                style={{
-                  fontSize: 15,
-                  marginTop: 5,
-                  color: '#000',
-                  fontWeight: 'bold',
-                  padding: '5%',
-                }}>
-                #Label
-              </Text>
-              <Text
-                style={{
-                  fontSize: 15,
-                  marginTop: 5,
-                  color: '#000',
-                  fontWeight: 'bold',
-                  padding: '5%',
-                }}>
-                #Label
-              </Text>
-              <Text
-                style={{
-                  fontSize: 15,
-                  marginTop: 5,
-                  color: '#000',
-                  fontWeight: 'bold',
-                  padding: '5%',
-                }}>
-                #Label
-              </Text>
-            </View>
-
-            <Icon
-              name="database"
-              size={30}
-              color={'#000'}
-              style={{alignSelf: 'center', marginTop: '10%'}}></Icon>
-            <Text
-              style={{
-                fontSize: 30,
-                color: '#000',
-                fontWeight: 'bold',
-                textAlign: 'center',
-              }}>
-              5 XP
-            </Text>
-          </View>
-        </View>
-      </View>
-    );
+  async componentDidMount() {
+    this.props.getUpcomingExperiences();
   }
 
   render() {
@@ -195,18 +41,18 @@ export default class XpMarket extends Component {
           <Carousel
             layout={'tinder'}
             ref={(ref) => (this.carousel = ref)}
-            data={this.state.carouselItems}
+            data={this.props.upcomingExperiences}
             sliderWidth={350}
             itemWidth={300}
             layoutCardOffset={10}
-            renderItem={this._renderItem}
+            renderItem={(item) => TinderCard(item)}
             activeSlideOffset={10}
             activeSlideAlignment={'end'}
             onSnapToItem={(index) => this.setState({activeIndex: index})}
           />
         </View>
 
-        <View style={{marginBottom: '25%'}}>
+        <View style={{marginTop: 20}}>
           <View style={{alignSelf: 'center', flex: 1, flexDirection: 'row'}}>
             <Icon
               onPress={() => {
@@ -272,3 +118,7 @@ const styles = StyleSheet.create({
     width: 120,
   },
 });
+
+export default connect(mapStateToProps, {
+  getUpcomingExperiences,
+})(XpMarket);
