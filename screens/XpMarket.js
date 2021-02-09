@@ -48,14 +48,13 @@ export default class XpMarket extends Component {
 
   _renderItem({item, index}) {
     return (
-      <View>
+      <View style={{alignSelf: 'center'}}>
         <View
           style={{
             borderColor: '#000',
             borderWidth: 1,
             borderRadius: 10,
-            width: 325,
-            align: 'center',
+            alignSelf: 'center',
           }}>
           <View
             style={{
@@ -72,6 +71,7 @@ export default class XpMarket extends Component {
               backgroundColor: '#FFF',
               shadowOffset: {width: 50, height: 50},
               shadowOpacity: 0.7,
+              alignSelf: 'center',
             }}>
             <View style={{flexDirection: 'row'}}>
               <Image
@@ -196,7 +196,7 @@ export default class XpMarket extends Component {
             layout={'tinder'}
             ref={(ref) => (this.carousel = ref)}
             data={this.state.carouselItems}
-            sliderWidth={300}
+            sliderWidth={350}
             itemWidth={300}
             layoutCardOffset={10}
             renderItem={this._renderItem}
