@@ -1,6 +1,6 @@
 import {getExternal, getWithAuth, postWithAuth} from '../tools/util';
 import {createTicket} from '../contracts';
-import * as RootNavigation from '../RootNavigation';
+import {navigate} from '../RootNavigation';
 import {
   EXPERIENCE_CREATE,
   EXPERIENCE_CREATE_SUCCESS,
@@ -42,7 +42,7 @@ export function createExperience(params, templateIndex = -1) {
         if (ticket) {
           // go to QR code screen
           dispatch({type: EXPERIENCE_CREATE_SUCCESS});
-          RootNavigation.navigate('ExpLive', {url});
+          navigate('ExpLive', {url});
         } else {
           //ToDo: show error
           dispatch({type: EXPERIENCE_CREATE_FAILURE});

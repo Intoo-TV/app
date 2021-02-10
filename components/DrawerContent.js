@@ -66,7 +66,7 @@ function DrawerContent(props) {
         <Item
           text="Store"
           icon="payments"
-          onPress={() => props.navigation.navigate('GuestHome')}
+          onPress={() => props.navigation.navigate('Store')}
         />
         <Item
           text="Notifications"

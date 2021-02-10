@@ -17,6 +17,7 @@ import XpCabin from '../screens/XpCabin';
 import XpCalendar from '../screens/XpCalendar';
 import XpDetails from '../screens/XpDetails';
 import XpMarket from '../screens/XpMarket';
+import Store from '../screens/Store';
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 
@@ -43,6 +44,7 @@ export default function StackNavigator() {
       <Stack.Screen name="RequestCalendar" component={RequestCalendar} />
       <Stack.Screen name="Reset" component={Reset} />
       <Stack.Screen name="Splash" component={Splash} />
+      <Stack.Screen name="Store" component={Store} />
       <Stack.Screen name="Success" component={Success} />
       <Stack.Screen name="XpCabin" component={XpCabin} />
       <Stack.Screen name="XpCalendar" component={XpCalendar} />
