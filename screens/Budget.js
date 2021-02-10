@@ -20,6 +20,7 @@ class Budget extends React.Component {
     super(props);
     let {experience} = this.props.route.params;
     this.state = {
+      loading: false,
       selectedBudget: experience.budget ? experience.budget : 0,
       experience,
     };
@@ -38,6 +39,7 @@ class Budget extends React.Component {
         {
           text: 'OK',
           onPress: async () => {
+            this.setState({loading: true});
             console.log('Submitted');
             await createAccessToEvent(
               this.state.experience.tokenID,
@@ -106,28 +108,31 @@ class Budget extends React.Component {
           </TouchableOpacity>
         </View>
 
-        <Text
-          style={{
-            position: 'relative',
-            fontSize: 20,
-            textAlign: 'center',
-            color: '#FFF',
-            backgroundColor: '#000',
-            fontFamily: 'Roboto',
-            marginTop: '-2.5%',
-            padding: '3%',
-            width: '70%',
-            borderWidth: 2,
-            alignSelf: 'center',
-            borderTopColor: '#000',
-            borderBottomColor: '#000',
-            borderLeftColor: '#FFF',
-            borderRightColor: '#FFF',
-            textAlignVertical: 'center',
-          }}
+        <TouchableOpacity
+          disabled={this.state.loading}
           onPress={() => this.ConfirmXP()}>
-          Submit
-        </Text>
+          <Text
+            style={{
+              position: 'relative',
+              fontSize: 20,
+              textAlign: 'center',
+              color: '#FFF',
+              backgroundColor: this.state.loading ? 'grey' : '#000',
+              fontFamily: 'Roboto',
+              marginTop: '-2.5%',
+              padding: '3%',
+              width: '70%',
+              borderWidth: 2,
+              alignSelf: 'center',
+              borderTopColor: this.state.loading ? 'grey' : '#000',
+              borderBottomColor: this.state.loading ? 'grey' : '#000',
+              borderLeftColor: '#FFF',
+              borderRightColor: '#FFF',
+              textAlignVertical: 'center',
+            }}>
+            Submit
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }

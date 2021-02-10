@@ -4,6 +4,7 @@ import addresses from './addresses';
 import {ethers, getSigner} from '../tools/ethers';
 import {AddTokenToExperience} from '../actions/experience';
 import {store} from '../store/index';
+import {navigate} from '../RootNavigation';
 
 const TOO_MUCH = 42000000000;
 
@@ -111,6 +112,7 @@ export const createAccessToEvent = async (ticketId, props, host) => {
         console.log(guestExperienceAccessId);
 
         //ToDo: update ticket to backend
+        navigate('ExpLive', {url: props});
       },
     );
 
