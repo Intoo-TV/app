@@ -1,8 +1,9 @@
 import {post, get} from '../tools/util';
 import {LOGIN, LOG_OUT} from '../constants/Actions';
-import {createWallet} from './wallet';
+import {createWallet, walletCreated} from './wallet';
 import {getProfile} from './profile';
 import * as RootNavigation from '../RootNavigation';
+import {DEV_ADDRESS, DEV_MNEMONIC, DEV_PRIVATE} from '@env';
 
 function doLogOut() {
   return {
@@ -31,6 +32,16 @@ async function fetchSignupJson(email, password, address) {
 
 export function login(email, password, createProfile = false) {
   return function (dispatch, getState) {
+    if (__DEV__) {
+      console.log('setting dev wallet');
+      dispatch(
+        walletCreated({
+          mnemonic: DEV_MNEMONIC,
+          address: DEV_ADDRESS,
+          privateKey: DEV_PRIVATE,
+        }),
+      );
+    }
     return fetchLoginJson(email, password).then((json) => {
       console.log(json);
       if (json && !json.error) {
