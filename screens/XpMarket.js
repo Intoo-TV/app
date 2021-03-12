@@ -5,7 +5,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import Carousel from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/Entypo';
 import Header from '../components/Header';
-import {getUpcomingExperiences} from '../actions/experience';
+import {getNewExperiences} from '../actions/experience';
 import {connect} from 'react-redux';
 import {mapStateToProps} from '../tools/util';
 import TinderCard from '../components/TinderCard';
@@ -19,7 +19,7 @@ class XpMarket extends Component {
   }
 
   async componentDidMount() {
-    this.props.getUpcomingExperiences();
+    this.props.getNewExperiences();
   }
 
   render() {
@@ -126,5 +126,5 @@ const styles = StyleSheet.create({
 });
 
 export default connect(mapStateToProps, {
-  getUpcomingExperiences,
+  getNewExperiences,
 })(XpMarket);

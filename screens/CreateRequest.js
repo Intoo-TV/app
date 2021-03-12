@@ -33,7 +33,7 @@ class CreateRequest extends React.Component {
     selectedStartDate: null,
     start: new Date(),
     end: new Date(),
-    selectedBudget: 0,
+    selectedBudget: 2,
     saveTemplate: true,
   };
 
@@ -393,27 +393,27 @@ class CreateRequest extends React.Component {
                 justifyContent: 'center',
               }}>
               <TouchableOpacity
-                onPress={() => this.setState({selectedBudget: 0})}>
+                onPress={() => this.setState({selectedBudget: 2})}>
                 <Card
-                  selected={this.state.selectedBudget == 0}
+                  selected={this.state.selectedBudget == 2}
                   name="2 mins"
                   icon={Coins}
                 />
               </TouchableOpacity>
 
               <TouchableOpacity
-                onPress={() => this.setState({selectedBudget: 1})}>
+                onPress={() => this.setState({selectedBudget: 5})}>
                 <Card
-                  selected={this.state.selectedBudget == 1}
+                  selected={this.state.selectedBudget == 5}
                   name="5 mins"
                   icon={Coins}
                 />
               </TouchableOpacity>
 
               <TouchableOpacity
-                onPress={() => this.setState({selectedBudget: 2})}>
+                onPress={() => this.setState({selectedBudget: 10})}>
                 <Card
-                  selected={this.state.selectedBudget == 2}
+                  selected={this.state.selectedBudget == 10}
                   name="10 mins"
                   icon={Coins}
                 />

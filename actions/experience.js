@@ -20,7 +20,7 @@ import {
 } from '../constants/Actions';
 
 async function createExperienceJson(params, token) {
-  return postWithAuth(`experience/`, params);
+  return postWithAuth(`experience/nft`, params, token);
 }
 
 export function createExperience(params, templateIndex = -1) {
@@ -31,12 +31,16 @@ export function createExperience(params, templateIndex = -1) {
       if (json && !json.error) {
         console.log(json);
         let url = json.url;
+        let start = params.properties.startTime;
+        let duration = params.properties.budget;
 
         // create NFT
         let ticket = await createTicket(
           url,
           templateIndex,
           params.properties.isTemplate,
+          start,
+          duration,
         );
 
         if (ticket) {
@@ -56,28 +60,30 @@ export function createExperience(params, templateIndex = -1) {
   };
 }
 
-async function addTokenToExperienceJson(tokenID, url, token) {
-  let params = {tokenID, url};
-  return postWithAuth(`experience/tokenID`, params, token);
+async function addTokenToExperienceJson(tokenID, url, start, duration, token) {
+  let params = {tokenID, url, start, duration};
+  return postWithAuth(`experience`, params, token);
 }
 
-export function AddTokenToExperience(tokenID, url) {
+export function AddTokenToExperience(tokenID, url, start, duration) {
   console.log('add token to experience');
   return function (dispatch, getState) {
     dispatch({type: EXPERIENCE_TOKEN_ADD});
     let {token} = getState().auth;
-    return addTokenToExperienceJson(tokenID, url, token).then((json) => {
-      console.log(json);
-      if (json && !json.error) {
-        dispatch({type: EXPERIENCE_TOKEN_ADD_SUCCESS});
-        return true;
-      } else {
-        dispatch({type: EXPERIENCE_TOKEN_ADD_FAILURE});
-        // dispatch(addAlert('error', '', json.error));
+    return addTokenToExperienceJson(tokenID, url, start, duration, token).then(
+      (json) => {
         console.log(json);
-        return false;
-      }
-    });
+        if (json && !json.error) {
+          dispatch({type: EXPERIENCE_TOKEN_ADD_SUCCESS});
+          return true;
+        } else {
+          dispatch({type: EXPERIENCE_TOKEN_ADD_FAILURE});
+          // dispatch(addAlert('error', '', json.error));
+          console.log(json);
+          return false;
+        }
+      },
+    );
   };
 }
 
@@ -114,7 +120,7 @@ function receiveUpcomingExperiences(data) {
 }
 
 async function fetchUpcomingExperiencesJson(token) {
-  let result = await getWithAuth(`experience?past=false`, token);
+  let result = await getWithAuth(`user/experiences?past=false`, token);
   if (result && !result.error) {
     return result;
   } else {
@@ -161,7 +167,7 @@ function receivePastExperiences(data) {
 }
 
 async function fetchPastExperiencesJson(token) {
-  let result = await getWithAuth(`experience?past=true`, token);
+  let result = await getWithAuth(`user/experiences?past=true`, token);
   if (result && !result.error) {
     return result;
   } else {
@@ -187,4 +193,24 @@ async function getExperienceData(url) {
   } else {
     return false;
   }
+}
+
+async function fetchNewExperiencesJson(token) {
+  let result = await getWithAuth(`experience`, token);
+  if (result && !result.error) {
+    return result;
+  } else {
+    return false;
+  }
+}
+
+export function getNewExperiences() {
+  return function (dispatch, getState) {
+    dispatch({type: RECEIVE_PAST_EXPERIENCES_REQUEST});
+    let {token} = getState().auth;
+    return fetchNewExperiencesJson(token).then(async (json) => {
+      let experiences = await collectExperienceDetails(json);
+      dispatch(receivePastExperiences(experiences));
+    });
+  };
 }

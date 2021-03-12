@@ -21,7 +21,7 @@ class Budget extends React.Component {
     let {experience} = this.props.route.params;
     this.state = {
       loading: false,
-      selectedBudget: experience.budget ? experience.budget : 0,
+      selectedBudget: experience.budget ? experience.budget : 2,
       experience,
     };
   }
@@ -83,25 +83,25 @@ class Budget extends React.Component {
             alignContent: 'center',
             justifyContent: 'center',
           }}>
-          <TouchableOpacity onPress={() => this.setState({selectedBudget: 0})}>
+          <TouchableOpacity onPress={() => this.setState({selectedBudget: 2})}>
             <Card
-              selected={this.state.selectedBudget == 0}
+              selected={this.state.selectedBudget == 2}
               name="2 mins"
               icon={Coins}
             />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => this.setState({selectedBudget: 1})}>
+          <TouchableOpacity onPress={() => this.setState({selectedBudget: 5})}>
             <Card
-              selected={this.state.selectedBudget == 1}
+              selected={this.state.selectedBudget == 5}
               name="5 mins"
               icon={Coins}
             />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => this.setState({selectedBudget: 2})}>
+          <TouchableOpacity onPress={() => this.setState({selectedBudget: 10})}>
             <Card
-              selected={this.state.selectedBudget == 2}
+              selected={this.state.selectedBudget == 10}
               name="10 mins"
               icon={Coins}
             />

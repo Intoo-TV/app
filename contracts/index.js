@@ -41,7 +41,13 @@ export const xpContract = async () => {
 // -- consider creating a single smart contract function for all of the below
 // todo: we need to call approve on the addresses.xpToken
 // for every user. Otherwise, the transactions will fail
-export const createTicket = async (props, templateIndex, saveTemplate) => {
+export const createTicket = async (
+  props,
+  templateIndex,
+  saveTemplate,
+  start,
+  duration,
+) => {
   try {
     const ticketFactoryInst = await ticketFactoryContract();
 
@@ -54,7 +60,9 @@ export const createTicket = async (props, templateIndex, saveTemplate) => {
 
         //ToDo: send ticket to backend
         console.log('Send token to backend');
-        store.dispatch(AddTokenToExperience(ticketId.toString(), props));
+        store.dispatch(
+          AddTokenToExperience(ticketId.toNumber(), props, start, duration),
+        );
       },
     );
 
