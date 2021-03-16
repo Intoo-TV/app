@@ -31,10 +31,9 @@ async function fetchSignupJson(email, password, address) {
 }
 
 export function login(email, password, createProfile = false) {
-  return function (dispatch, getState) {
+  return function (dispatch) {
     if (__DEV__) {
-      let wallet = getState().wallet;
-      if (!wallet.address) {
+      if (!createProfile) {
         console.log('setting dev wallet');
         dispatch(
           walletCreated({
