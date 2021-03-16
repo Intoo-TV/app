@@ -82,6 +82,10 @@ target 'IntooTv' do
 
   pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-async-storage/async-storage'
 
+  # web3-react-native
+  pod 'secp256k1.c', '0.1.2', :modular_headers => true
+  pod 'web3swift', '2.2.1', :modular_headers => true
+
   target 'IntooTvTests' do
     inherit! :complete
     # Pods for testing

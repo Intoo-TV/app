@@ -95,6 +95,8 @@ export async function post(action, params) {
 }
 
 export async function postWithAuth(action, params, token) {
+  console.log('params');
+  console.log(params);
   return fetch(API_ENDPOINT + action, {
     method: 'POST',
     headers: {
@@ -104,7 +106,10 @@ export async function postWithAuth(action, params, token) {
     },
     body: JSON.stringify(params),
   })
-    .then((response) => response.json())
+    .then((response) => {
+      console.log(response);
+      return response.json();
+    })
     .then((responseJson) => {
       return responseJson;
     })

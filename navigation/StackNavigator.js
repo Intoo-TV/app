@@ -26,7 +26,7 @@ const Stack = createStackNavigator();
 export default function StackNavigator() {
   return (
     <Stack.Navigator
-      initialRouteName="Store"
+      initialRouteName="Login"
       headerMode="none"
       screenOptions={{cardStyle: {backgroundColor: 'white'}}}>
       <Stack.Screen name="Home" component={_Home} />
