@@ -33,14 +33,17 @@ async function fetchSignupJson(email, password, address) {
 export function login(email, password, createProfile = false) {
   return function (dispatch, getState) {
     if (__DEV__) {
-      console.log('setting dev wallet');
-      dispatch(
-        walletCreated({
-          mnemonic: DEV_MNEMONIC,
-          address: DEV_ADDRESS,
-          privateKey: DEV_PRIVATE,
-        }),
-      );
+      let wallet = getState().wallet;
+      if (!wallet.address) {
+        console.log('setting dev wallet');
+        dispatch(
+          walletCreated({
+            mnemonic: DEV_MNEMONIC,
+            address: DEV_ADDRESS,
+            privateKey: DEV_PRIVATE,
+          }),
+        );
+      }
     }
     return fetchLoginJson(email, password).then((json) => {
       console.log(json);
