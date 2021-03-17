@@ -3,7 +3,7 @@ import {
   WALLET_FAILURE,
   WALLET_SUCCESS,
 } from '../constants/Actions';
-import {ethers} from '../tools/ethers';
+import {ethers} from '../contracts/index';
 
 export function walletCreated(wallet) {
   return {

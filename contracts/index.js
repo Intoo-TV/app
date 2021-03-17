@@ -1,12 +1,49 @@
+// Import the crypto getRandomValues shim (**BEFORE** the shims)
+import 'react-native-get-random-values';
+
+// Import the the ethers shims (**BEFORE** ethers)
+import '@ethersproject/shims';
+
+// Import the ethers library
+import {ethers} from 'ethers';
+
 import abis from './abis';
 import addresses from './addresses';
 
-import {ethers, getSigner} from '../tools/ethers';
+import {Web3HttpProvider} from '@react-native-anywhere/anywhere';
 import {AddTokenToExperience} from '../actions/experience';
 import {store} from '../store/index';
 import {navigate} from '../RootNavigation';
+import {MATICVIGIL_KEY, BICONOMY_KEY} from '@env';
+import {Biconomy} from '@biconomy/mexa';
 
-const TOO_MUCH = 42000000000;
+const httpProvider = new Web3HttpProvider(
+  `https://rpc-mumbai.maticvigil.com/v1/${MATICVIGIL_KEY}`,
+);
+
+let biconomy, provider;
+let ticketFactoryInst;
+
+getSigner().then((signer) => {
+  biconomy = new Biconomy(httpProvider, {
+    walletProvider: signer,
+    apiKey: BICONOMY_KEY,
+    debug: true,
+  });
+  provider = new ethers.providers.Web3Provider(biconomy);
+
+  biconomy
+    .onEvent(biconomy.READY, async () => {
+      // Initialize your dapp here like getting user accounts etc
+      console.log('biconomy is ready!');
+      ticketFactoryInst = await ticketFactoryContract();
+    })
+    .onEvent(biconomy.ERROR, (error, message) => {
+      console.log('Biconomy error');
+      console.log(error, message);
+      // Handle error while initializing mexa
+    });
+});
 
 // these are the contract instances that let us call
 // all the functions on the smart contracts
@@ -37,6 +74,21 @@ export const xpContract = async () => {
   }
 };
 
+async function getSigner() {
+  try {
+    const {wallet} = store.getState();
+    if (wallet.privateKey) {
+      const ethersProvider = new ethers.providers.Web3Provider(httpProvider);
+      return await new ethers.Wallet(wallet.privateKey).connect(ethersProvider);
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.log('error:');
+    console.log(err);
+  }
+}
+
 // TODO: rimble like notification at every step. this is a lengthy call
 // -- consider creating a single smart contract function for all of the below
 // todo: we need to call approve on the addresses.xpToken
@@ -49,40 +101,64 @@ export const createTicket = async (
   duration,
 ) => {
   try {
-    const ticketFactoryInst = await ticketFactoryContract();
+    if (ticketFactoryInst) {
+      const {wallet} = store.getState();
+      ticketFactoryInst.once(
+        'TicketCreated',
+        async (ticketId, ticketCreator, props, templateIndex) => {
+          console.log('Ticket created!');
+          console.log(ticketId.toString());
+          console.log(props);
 
-    ticketFactoryInst.once(
-      'TicketCreated',
-      async (ticketId, ticketCreator, props, templateIndex) => {
-        console.log('Ticket created!');
-        console.log(ticketId.toString());
-        console.log(props);
+          //ToDo: send ticket to backend
+          console.log('Send token to backend');
+          store.dispatch(
+            AddTokenToExperience(ticketId.toNumber(), props, start, duration),
+          );
+        },
+      );
 
-        //ToDo: send ticket to backend
-        console.log('Send token to backend');
-        store.dispatch(
-          AddTokenToExperience(ticketId.toNumber(), props, start, duration),
-        );
-      },
-    );
+      console.log('estimate gas');
+      let estimateGas = await ticketFactoryInst.estimateGas.createTicket(
+        props,
+        templateIndex,
+        saveTemplate,
+      );
 
-    console.log('estimate gas');
-    let estimateGas = await ticketFactoryInst.estimateGas.createTicket(
-      props,
-      templateIndex,
-      saveTemplate,
-    );
+      console.log('gas estimate:' + estimateGas.toString() + ' GWEI');
 
-    console.log('gas estimate:' + estimateGas.toString() + ' GWEI');
+      let {data} = await ticketFactoryInst.populateTransaction.createTicket(
+        props,
+        templateIndex,
+        saveTemplate,
+      );
 
-    let ticket = await ticketFactoryInst.createTicket(
-      props,
-      templateIndex,
-      saveTemplate,
-    );
-    console.log('contracts ticket');
-    console.log(ticket);
-    return ticket;
+      let gasLimit = await provider.estimateGas({
+        to: addresses.ticketFactory,
+        from: wallet.address,
+        data: data,
+      });
+      console.log('Gas limit : ', gasLimit);
+      let txParams = {
+        data: data,
+        to: addresses.ticketFactory,
+        from: wallet.address,
+        gasLimit: gasLimit,
+        signatureType: 'EIP712_SIGN',
+      };
+      let ticket = await provider.send('eth_sendTransaction', [txParams]);
+
+      // let ticket = await ticketFactoryInst.createTicket(
+      //   props,
+      //   templateIndex,
+      //   saveTemplate,
+      // );
+      console.log('contracts ticket');
+      console.log(ticket);
+      return ticket;
+    } else {
+      console.log('ticketfactory contract is not created yet');
+    }
   } catch (err) {
     console.log('error');
     console.log(err);
@@ -101,8 +177,6 @@ export const createTicket = async (
  */
 export const createAccessToEvent = async (ticketId, props, host) => {
   try {
-    const ticketFactoryInst = await ticketFactoryContract();
-
     ticketFactoryInst.once(
       'ExperienceMatchingCreated',
       async (
@@ -141,8 +215,6 @@ export const createAccessToEvent = async (ticketId, props, host) => {
 
 export const expireExperience = async (ticketId) => {
   try {
-    const ticketFactoryInst = await ticketFactoryContract();
-
     ticketFactoryInst.once('ExperienceEnded', (ticketId) => {
       console.log('Experience ended');
       console.log(ticketId);
@@ -162,7 +234,6 @@ export const expireExperience = async (ticketId) => {
 };
 
 export const getExperiencesByAddress = async () => {
-  const ticketFactoryInst = await ticketFactoryContract();
   try {
     // let filter = ticketFactoryInst.filters.TicketCreated(null);
     // let experiences = await ticketFactoryInst.queryFilter(filter, 0, 'latest');
@@ -177,3 +248,5 @@ export const getExperiencesByAddress = async () => {
     console.log(err);
   }
 };
+
+export {ethers};
