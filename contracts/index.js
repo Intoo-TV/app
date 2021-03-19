@@ -78,8 +78,7 @@ async function getSigner() {
   try {
     const {wallet} = store.getState();
     if (wallet.privateKey) {
-      const ethersProvider = new ethers.providers.Web3Provider(httpProvider);
-      return await new ethers.Wallet(wallet.privateKey).connect(ethersProvider);
+      return await new ethers.Wallet(wallet.privateKey).connect(provider);
     } else {
       return null;
     }
@@ -133,6 +132,7 @@ export const createTicket = async (
         saveTemplate,
       );
 
+      let biconomyProvider = biconomy.getEthersProvider();
       let gasLimit = await provider.estimateGas({
         to: addresses.ticketFactory,
         from: wallet.address,
@@ -144,9 +144,28 @@ export const createTicket = async (
         to: addresses.ticketFactory,
         from: wallet.address,
         gasLimit: gasLimit,
-        signatureType: 'EIP712_SIGN',
       };
-      let ticket = await provider.send('eth_sendTransaction', [txParams]);
+      let userSigner = new ethers.Wallet(wallet.privateKey);
+      let signedTx = await userSigner.signTransaction(txParams);
+      // should get user message to sign for EIP712 or personal signature types
+      const forwardData = await biconomy.getForwardRequestAndMessageToSign(
+        signedTx,
+      );
+
+      console.log(forwardData);
+
+      // let txData = {
+      //   forwardRequest: forwardData.request,
+      //   rawTransaction: signedTx,
+      //   signatureType: biconomy.EIP712_SIGN,
+      // };
+
+      let txHash = await biconomyProvider.send('eth_sendRawTransaction', [
+        signedTx,
+      ]);
+      console.log('txHash: ', txHash);
+
+      // let ticket = await provider.send('eth_sendTransaction', [txParams]);
 
       // let ticket = await ticketFactoryInst.createTicket(
       //   props,
@@ -154,8 +173,8 @@ export const createTicket = async (
       //   saveTemplate,
       // );
       console.log('contracts ticket');
-      console.log(ticket);
-      return ticket;
+      // console.log(ticket);
+      // return ticket;
     } else {
       console.log('ticketfactory contract is not created yet');
     }
