@@ -22,7 +22,7 @@ const httpProvider = new Web3HttpProvider(
 );
 
 let biconomy, provider;
-let ticketFactoryInst;
+let ticketFactoryInst, contractInterface;
 
 getSigner().then((signer) => {
   biconomy = new Biconomy(httpProvider, {
@@ -37,6 +37,7 @@ getSigner().then((signer) => {
       // Initialize your dapp here like getting user accounts etc
       console.log('biconomy is ready!');
       ticketFactoryInst = await ticketFactoryContract();
+      contractInterface = new ethers.utils.Interface(abis.ticketFactory);
     })
     .onEvent(biconomy.ERROR, (error, message) => {
       console.log('Biconomy error');
@@ -133,6 +134,10 @@ export const createTicket = async (
       );
 
       let biconomyProvider = biconomy.getEthersProvider();
+      let functionSignature = contractInterface.encodeFunctionData(
+        'createTicket',
+        [props, templateIndex, saveTemplate],
+      );
       let gasLimit = await provider.estimateGas({
         to: addresses.ticketFactory,
         from: wallet.address,
@@ -140,7 +145,7 @@ export const createTicket = async (
       });
       console.log('Gas limit : ', gasLimit);
       let txParams = {
-        data: data,
+        data: functionSignature,
         to: addresses.ticketFactory,
         from: wallet.address,
         gasLimit: gasLimit,
@@ -154,14 +159,16 @@ export const createTicket = async (
 
       console.log(forwardData);
 
-      // let txData = {
-      //   forwardRequest: forwardData.request,
-      //   rawTransaction: signedTx,
-      //   signatureType: biconomy.EIP712_SIGN,
-      // };
+      console.log(signedTx);
+      let txData = {
+        // signature: signedTx.signature,
+        forwardRequest: forwardData.request,
+        rawTransaction: signedTx,
+        // signatureType: biconomy.EIP712_SIGN,
+      };
 
       let txHash = await biconomyProvider.send('eth_sendRawTransaction', [
-        signedTx,
+        txData,
       ]);
       console.log('txHash: ', txHash);
 
