@@ -2,7 +2,7 @@
 import requestCameraAndAudioPermission from './permission';
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, Platform} from 'react-native';
-import {RtcEngine, AgoraView} from 'react-native-agora';
+// import {RtcEngine, AgoraView} from 'react-native-agora';
 import styles from './Style';
 
 const config = {
@@ -35,44 +35,44 @@ class Video extends Component {
     }
   }
   componentDidMount() {
-    RtcEngine.on('userJoined', (data) => {
-      const {peerIds} = this.state; //Get currrent peer IDs
-      if (peerIds.indexOf(data.uid) === -1) {
-        //If new user has joined
-        this.setState({
-          peerIds: [...peerIds, data.uid], //add peer ID to state array
-        });
-      }
-    });
-    RtcEngine.on('userOffline', (data) => {
-      //If user leaves
-      this.setState({
-        peerIds: this.state.peerIds.filter((uid) => uid !== data.uid), //remove peer ID from state array
-      });
-    });
-    RtcEngine.on('joinChannelSuccess', (data) => {
-      //If Local user joins RTC channel
-      RtcEngine.startPreview(); //Start RTC preview
-      this.setState({
-        joinSucceed: true, //Set state variable to true
-      });
-    });
-    RtcEngine.init(config); //Initialize the RTC engine
+    // RtcEngine.on('userJoined', (data) => {
+    //   const {peerIds} = this.state; //Get currrent peer IDs
+    //   if (peerIds.indexOf(data.uid) === -1) {
+    //     //If new user has joined
+    //     this.setState({
+    //       peerIds: [...peerIds, data.uid], //add peer ID to state array
+    //     });
+    //   }
+    // });
+    // RtcEngine.on('userOffline', (data) => {
+    //   //If user leaves
+    //   this.setState({
+    //     peerIds: this.state.peerIds.filter((uid) => uid !== data.uid), //remove peer ID from state array
+    //   });
+    // });
+    // RtcEngine.on('joinChannelSuccess', (data) => {
+    //   //If Local user joins RTC channel
+    //   RtcEngine.startPreview(); //Start RTC preview
+    //   this.setState({
+    //     joinSucceed: true, //Set state variable to true
+    //   });
+    // });
+    // RtcEngine.init(config); //Initialize the RTC engine
   }
   /**
    * @name startCall
    * @description Function to start the call
    */
   startCall = () => {
-    RtcEngine.joinChannel(this.state.channelName, this.state.uid); //Join Channel
-    RtcEngine.enableAudio(); //Enable the audio
+    // RtcEngine.joinChannel(this.state.channelName, this.state.uid); //Join Channel
+    // RtcEngine.enableAudio(); //Enable the audio
   };
   /**
    * @name endCall
    * @description Function to end the call
    */
   endCall = () => {
-    RtcEngine.leaveChannel();
+    // RtcEngine.leaveChannel();
     this.setState({
       peerIds: [],
       joinSucceed: false,
@@ -108,82 +108,83 @@ class Video extends Component {
                 {this.state.peerIds.length > 3 ? ( //view for four videostreams
                   <View style={styles.full}>
                     <View style={styles.halfViewRow}>
-                      <AgoraView
-                        style={styles.half}
-                        remoteUid={this.state.peerIds[0]}
-                        mode={1}
-                      />
-                      <AgoraView
-                        style={styles.half}
-                        remoteUid={this.state.peerIds[1]}
-                        mode={1}
-                      />
+                      {/*<AgoraView*/}
+                      {/*  style={styles.half}*/}
+                      {/*  remoteUid={this.state.peerIds[0]}*/}
+                      {/*  mode={1}*/}
+                      {/*/>*/}
+                      {/*<AgoraView*/}
+                      {/*  style={styles.half}*/}
+                      {/*  remoteUid={this.state.peerIds[1]}*/}
+                      {/*  mode={1}*/}
+                      {/*/>*/}
                     </View>
                     <View style={styles.halfViewRow}>
-                      <AgoraView
-                        style={styles.half}
-                        remoteUid={this.state.peerIds[2]}
-                        mode={1}
-                      />
-                      <AgoraView
-                        style={styles.half}
-                        remoteUid={this.state.peerIds[3]}
-                        mode={1}
-                      />
+                      {/*<AgoraView*/}
+                      {/*  style={styles.half}*/}
+                      {/*  remoteUid={this.state.peerIds[2]}*/}
+                      {/*  mode={1}*/}
+                      {/*/>*/}
+                      {/*<AgoraView*/}
+                      {/*  style={styles.half}*/}
+                      {/*  remoteUid={this.state.peerIds[3]}*/}
+                      {/*  mode={1}*/}
+                      {/*/>*/}
                     </View>
                   </View>
                 ) : this.state.peerIds.length > 2 ? ( //view for three videostreams
                   <View style={styles.full}>
-                    <View style={styles.half}>
-                      <AgoraView
-                        style={styles.full}
-                        remoteUid={this.state.peerIds[0]}
-                        mode={1}
-                      />
-                    </View>
-                    <View style={styles.halfViewRow}>
-                      <AgoraView
-                        style={styles.half}
-                        remoteUid={this.state.peerIds[1]}
-                        mode={1}
-                      />
-                      <AgoraView
-                        style={styles.half}
-                        remoteUid={this.state.peerIds[2]}
-                        mode={1}
-                      />
-                    </View>
+                    {/*<View style={styles.half}>*/}
+                    {/*  <AgoraView*/}
+                    {/*    style={styles.full}*/}
+                    {/*    remoteUid={this.state.peerIds[0]}*/}
+                    {/*    mode={1}*/}
+                    {/*  />*/}
+                    {/*</View>*/}
+                    {/*<View style={styles.halfViewRow}>*/}
+                    {/*  <AgoraView*/}
+                    {/*    style={styles.half}*/}
+                    {/*    remoteUid={this.state.peerIds[1]}*/}
+                    {/*    mode={1}*/}
+                    {/*  />*/}
+                    {/*  <AgoraView*/}
+                    {/*    style={styles.half}*/}
+                    {/*    remoteUid={this.state.peerIds[2]}*/}
+                    {/*    mode={1}*/}
+                    {/*  />*/}
+                    {/*</View>*/}
                   </View>
                 ) : this.state.peerIds.length > 1 ? ( //view for two videostreams
                   <View style={styles.full}>
-                    <AgoraView
-                      style={styles.full}
-                      remoteUid={this.state.peerIds[0]}
-                      mode={1}
-                    />
-                    <AgoraView
-                      style={styles.full}
-                      remoteUid={this.state.peerIds[1]}
-                      mode={1}
-                    />
+                    {/*<AgoraView*/}
+                    {/*  style={styles.full}*/}
+                    {/*  remoteUid={this.state.peerIds[0]}*/}
+                    {/*  mode={1}*/}
+                    {/*/>*/}
+                    {/*<AgoraView*/}
+                    {/*  style={styles.full}*/}
+                    {/*  remoteUid={this.state.peerIds[1]}*/}
+                    {/*  mode={1}*/}
+                    {/*/>*/}
                   </View>
                 ) : this.state.peerIds.length > 0 ? ( //view for videostream
-                  <AgoraView
-                    style={styles.full}
-                    remoteUid={this.state.peerIds[0]}
-                    mode={1}
-                  />
+                  // <AgoraView
+                  //   style={styles.full}
+                  //   remoteUid={this.state.peerIds[0]}
+                  //   mode={1}
+                  // />
+                  <View />
                 ) : (
                   <View>
                     <Text style={styles.noUserText}> No users connected </Text>
                   </View>
                 )}
-                <AgoraView
-                  style={styles.localVideoStyle}
-                  zOrderMediaOverlay={true}
-                  showLocalVideo={true}
-                  mode={1}
-                />
+                {/*<AgoraView*/}
+                {/*  style={styles.localVideoStyle}*/}
+                {/*  zOrderMediaOverlay={true}*/}
+                {/*  showLocalVideo={true}*/}
+                {/*  mode={1}*/}
+                {/*/>*/}
               </View>
             )}
           </View>
