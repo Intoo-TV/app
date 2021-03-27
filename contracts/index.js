@@ -10,14 +10,13 @@ import {ethers} from 'ethers';
 import abis from './abis';
 import addresses from './addresses';
 
-import {Web3HttpProvider} from '@react-native-anywhere/anywhere';
 import {AddTokenToExperience} from '../actions/experience';
 import {store} from '../store/index';
 import {navigate} from '../RootNavigation';
 import {MATICVIGIL_KEY, BICONOMY_KEY} from '@env';
 import {Biconomy} from '@biconomy/mexa';
 
-const httpProvider = new Web3HttpProvider(
+const httpProvider = new ethers.providers.JsonRpcProvider(
   `https://rpc-mumbai.maticvigil.com/v1/${MATICVIGIL_KEY}`,
 );
 
