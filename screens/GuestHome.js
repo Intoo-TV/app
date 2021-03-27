@@ -6,7 +6,6 @@ import {
   Text,
   View,
   ScrollView,
-  NativeModules,
 } from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Carousel from 'react-native-snap-carousel';
@@ -19,7 +18,6 @@ import {
   getUpcomingExperiences,
   getPastExperiences,
 } from '../actions/experience';
-const {ThetaModule} = NativeModules;
 
 class GuestHome extends Component {
   constructor(props) {
@@ -154,7 +152,8 @@ class GuestHome extends Component {
             position: 'absolute',
           }}>
           <Text style={styles.start}>Start</Text>
-          <TouchableOpacity onPress={() => ThetaModule.test()}>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('CreateRequest')}>
             <Icon
               name="pen"
               size={30}

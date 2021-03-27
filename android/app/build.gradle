@@ -197,6 +197,11 @@ dependencies {
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.8.0'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.8.0'
+    implementation 'com.google.android.exoplayer:exoplayer-dash:2.8.0'
+    implementation 'com.google.android.exoplayer:exoplayer-hls:2.8.0'
+
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }

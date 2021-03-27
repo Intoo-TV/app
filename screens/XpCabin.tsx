@@ -7,6 +7,7 @@ import {
   View,
   Image,
   processColor,
+  NativeModules,
 } from 'react-native';
 // import RtcEngine, {
 //   RtcLocalView,
@@ -17,6 +18,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import requestCameraAndAudioPermission from '../components/Permission';
 import styles from '../components/Style';
+
+const {ThetaModule} = NativeModules;
 
 interface Props {}
 
@@ -185,7 +188,13 @@ export default class XpCabin extends Component<Props, State> {
 
           <View style={styles.buttonHolder}>
             {!this.state.joinSucceed && (
-              <TouchableOpacity onPress={this.startCall} style={styles.button}>
+              <TouchableOpacity
+                onPress={() =>
+                  ThetaModule.showVideoPlayer(
+                    'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8',
+                  )
+                }
+                style={styles.button}>
                 <Text style={styles.buttonText}> START </Text>
               </TouchableOpacity>
             )}
