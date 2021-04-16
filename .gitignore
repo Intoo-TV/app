@@ -60,3 +60,4 @@ buck-out/
 
 # env vars
 .env
+android/java_pid99589.hprof
