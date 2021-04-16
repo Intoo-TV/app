@@ -12,17 +12,16 @@ export function walletCreated(wallet) {
   };
 }
 
-export function createWallet() {
-  return function (dispatch, getState) {
-    dispatch({type: WALLET_CREATE});
-    let wallet = ethers.Wallet.createRandom();
-    console.log(wallet);
-    return dispatch(
-      walletCreated({
-        mnemonic: wallet.mnemonic.phrase,
-        address: wallet.address,
-        privateKey: wallet.privateKey,
-      }),
-    );
-  };
-}
+// export function createWallet() {
+//   return function () {
+//     let wallet = ethers.Wallet.createRandom();
+//     console.log(wallet);
+//     return (
+//       walletCreated({
+//         mnemonic: wallet.mnemonic.phrase,
+//         addresdispatchs: wallet.address,
+//         privateKey: wallet.privateKey,
+//       }),
+//     );
+//   };
+// }

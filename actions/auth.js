@@ -64,7 +64,7 @@ export function login(email, password, createProfile = false) {
 export function signup(email, password) {
   return function (dispatch, getState) {
     // create random wallet
-    dispatch(createWallet());
+    // dispatch(createWallet());
 
     let wallet = getState().wallet;
 
