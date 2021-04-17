@@ -10,14 +10,11 @@ import android.view.WindowManager
 import android.widget.ProgressBar
 import android.widget.Toast
 import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.Player.DefaultEventListener
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector.MappedTrackInfo
-import com.google.android.exoplayer2.trackselection.TrackSelection
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.*
@@ -27,14 +24,18 @@ import org.theta.deliverysdk.datasource.ThetaDataSourceListener
 import org.theta.deliverysdk.datasource.ThetaHlsDataSourceFactory
 import org.theta.deliverysdk.models.*
 
-class ExoPlayer : Activity(), View.OnClickListener {
+private const val KEY_PLAY_WHEN_READY = "play_when_ready"
+private const val KEY_WINDOW = "window"
+private const val KEY_POSITION = "position"
+
+class ExoPlayer : Activity() {
+
     private var playerView: PlayerView? = null
     private var player: SimpleExoPlayer? = null
     private var window: Timeline.Window? = null
     private var trackSelector: DefaultTrackSelector? = null
     private var lastSeenTrackGroupArray: TrackGroupArray? = null
     private var shouldAutoPlay = false
-    private var bandwidthMeter: BandwidthMeter? = null
     private var progressBar: ProgressBar? = null
     private var playWhenReady = false
     private var currentWindow = 0
@@ -42,14 +43,14 @@ class ExoPlayer : Activity(), View.OnClickListener {
     private var url: String? = null
     private val streamUrl = "[your_m3u8_url]"
 
-    override fun onCreate(savedInstanceState: Bundle) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE) //Remove title bar
         setContentView(R.layout.activity_exo_player)
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN) //Remove notification bar
         if (savedInstanceState == null) {
             val extras = intent.extras
-            url = extras.getString("url")
+            url = extras?.getString("url")
             playWhenReady = true
             currentWindow = 0
             playbackPosition = 0
@@ -60,22 +61,22 @@ class ExoPlayer : Activity(), View.OnClickListener {
             url = savedInstanceState.getString("url")
         }
         shouldAutoPlay = true
-        bandwidthMeter = DefaultBandwidthMeter()
         window = Timeline.Window()
         progressBar = findViewById(R.id.progress_bar)
-        ThetaDelivery.init(this);
+        ThetaDelivery.init(this)
     }
 
     private fun initializePlayer() {
         playerView = findViewById(R.id.player_view)
         playerView?.requestFocus()
-        val videoTrackSelectionFactory: TrackSelection.Factory = AdaptiveTrackSelection.Factory(bandwidthMeter)
-        trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
+        trackSelector = DefaultTrackSelector(applicationContext)
         lastSeenTrackGroupArray = null
-        player = ExoPlayerFactory.newSimpleInstance(this, trackSelector)
-        playerView?.setPlayer(player)
+        player = SimpleExoPlayer.Builder(applicationContext)
+                .setTrackSelector(trackSelector!!)
+                .build()
+        playerView?.player = player
         player?.addListener(PlayerEventListener())
-        player?.setPlayWhenReady(shouldAutoPlay)
+        player?.playWhenReady = shouldAutoPlay
 
         val haveStartPosition = currentWindow != C.INDEX_UNSET
         if (haveStartPosition) {
@@ -91,7 +92,7 @@ class ExoPlayer : Activity(), View.OnClickListener {
         val dataSourceFactory = ThetaHlsDataSourceFactory(
                 this,
                 Util.getUserAgent(this, "DeliverySDK"),
-                BANDWIDTH_METER,
+                DefaultBandwidthMeter.Builder(applicationContext).build(),
                 ThetaConfig(
                         streamUrl,
                         "[unique_user_id]"),
@@ -132,36 +133,24 @@ class ExoPlayer : Activity(), View.OnClickListener {
             shouldAutoPlay = player!!.playWhenReady
             player!!.release()
             player = null
-            trackSelector = null
         }
     }
 
     public override fun onStart() {
         super.onStart()
-        if (Util.SDK_INT > 23) {
-            initializePlayer()
-        }
+        initializePlayer()
     }
 
     public override fun onResume() {
         super.onResume()
-        if (Util.SDK_INT <= 23 || player == null) {
+        if (player == null) {
             initializePlayer()
         }
     }
 
     public override fun onPause() {
         super.onPause()
-        if (Util.SDK_INT <= 23) {
-            releasePlayer()
-        }
-    }
-
-    public override fun onStop() {
-        super.onStop()
-        if (Util.SDK_INT > 23) {
-            releasePlayer()
-        }
+        releasePlayer()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -194,14 +183,11 @@ class ExoPlayer : Activity(), View.OnClickListener {
     }
 
     override fun onDestroy() {
-        ThetaDelivery.destroy(this);
+        ThetaDelivery.destroy(this)
         super.onDestroy()
     }
 
-    override fun onClick(v: View) {
-    }
-
-    private inner class PlayerEventListener : DefaultEventListener() {
+    private inner class PlayerEventListener : Player.EventListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             when (playbackState) {
                 Player.STATE_IDLE -> progressBar!!.visibility = View.VISIBLE
@@ -220,7 +206,7 @@ class ExoPlayer : Activity(), View.OnClickListener {
             updateButtonVisibilities()
             // The video tracks are no supported in this device.
             if (trackGroups !== lastSeenTrackGroupArray) {
-                val mappedTrackInfo = trackSelector!!.currentMappedTrackInfo
+                val mappedTrackInfo = trackSelector?.currentMappedTrackInfo
                 if (mappedTrackInfo != null) {
                     if (mappedTrackInfo.getTypeSupport(C.TRACK_TYPE_VIDEO)
                             == MappedTrackInfo.RENDERER_SUPPORT_UNSUPPORTED_TRACKS) {
@@ -230,13 +216,5 @@ class ExoPlayer : Activity(), View.OnClickListener {
                 lastSeenTrackGroupArray = trackGroups
             }
         }
-    }
-
-    companion object {
-        private const val KEY_PLAY_WHEN_READY = "play_when_ready"
-        private const val KEY_WINDOW = "window"
-        private const val KEY_POSITION = "position"
-        private val BANDWIDTH_METER = DefaultBandwidthMeter()
-
     }
 }
