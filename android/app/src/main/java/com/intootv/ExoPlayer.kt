@@ -4,25 +4,26 @@ import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.view.Window
 import android.view.WindowManager
 import android.widget.ProgressBar
-import android.widget.Toast
+import android.view.Window
 import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector.MappedTrackInfo
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.*
 import com.google.android.exoplayer2.util.Util
+import com.henninghall.date_picker.DatePickerManager.context
 import org.theta.deliverysdk.ThetaDelivery
 import org.theta.deliverysdk.datasource.ThetaDataSourceListener
 import org.theta.deliverysdk.datasource.ThetaHlsDataSourceFactory
 import org.theta.deliverysdk.models.*
+
 
 private const val KEY_PLAY_WHEN_READY = "play_when_ready"
 private const val KEY_WINDOW = "window"
@@ -40,8 +41,9 @@ class ExoPlayer : Activity() {
     private var playWhenReady = false
     private var currentWindow = 0
     private var playbackPosition: Long = 0
-    private var url: String? = null
-    private val streamUrl = "[your_m3u8_url]"
+    private val streamUrl = "https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8";
+    private var playerListener: Player.EventListener? = null
+    private var bandwidthMeter: BandwidthMeter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +52,6 @@ class ExoPlayer : Activity() {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN) //Remove notification bar
         if (savedInstanceState == null) {
             val extras = intent.extras
-            url = extras?.getString("url")
             playWhenReady = true
             currentWindow = 0
             playbackPosition = 0
@@ -58,48 +59,44 @@ class ExoPlayer : Activity() {
             playWhenReady = savedInstanceState.getBoolean(KEY_PLAY_WHEN_READY)
             currentWindow = savedInstanceState.getInt(KEY_WINDOW)
             playbackPosition = savedInstanceState.getLong(KEY_POSITION)
-            url = savedInstanceState.getString("url")
         }
         shouldAutoPlay = true
+        bandwidthMeter = DefaultBandwidthMeter()
         window = Timeline.Window()
         progressBar = findViewById(R.id.progress_bar)
-        ThetaDelivery.init(this)
+        ThetaDelivery.init(this);
     }
 
     private fun initializePlayer() {
-        playerView = findViewById(R.id.player_view)
-        playerView?.requestFocus()
-        trackSelector = DefaultTrackSelector(applicationContext)
-        lastSeenTrackGroupArray = null
-        player = SimpleExoPlayer.Builder(applicationContext)
-                .setTrackSelector(trackSelector!!)
-                .build()
-        playerView?.player = player
-        player?.addListener(PlayerEventListener())
-        player?.playWhenReady = shouldAutoPlay
+        if (player == null) {
+            player = ExoPlayerFactory.newSimpleInstance(
+                    DefaultRenderersFactory(this),
+                    DefaultTrackSelector(),
+                    DefaultLoadControl()
+            )
 
-        val haveStartPosition = currentWindow != C.INDEX_UNSET
-        if (haveStartPosition) {
-            player?.seekTo(currentWindow, playbackPosition)
+            playerView?.player = player
+            player?.playWhenReady = playWhenReady
+            player?.seekTo(0)
+            player?.addListener(getPlayerListener())
         }
+
         val mediaSource = buildMediaSource(Uri.parse(streamUrl))
-        player?.prepare(mediaSource, !haveStartPosition, false)
-        updateButtonVisibilities()
-
+        player?.prepare(mediaSource, true, false)
     }
-
     private fun buildMediaSource(uri: Uri): MediaSource {
         val dataSourceFactory = ThetaHlsDataSourceFactory(
                 this,
                 Util.getUserAgent(this, "DeliverySDK"),
-                DefaultBandwidthMeter.Builder(applicationContext).build(),
+                BANDWIDTH_METER,
                 ThetaConfig(
                         streamUrl,
-                        "[unique_user_id]"),
+                        "123",
+                        "",
+                        "vidwmir59zac1566re4"),
                 object : ThetaDataSourceListener {
                     override fun onInfoEvent(thetaInfoEvent: ThetaInfoEvent) {
                         Log.d("PlayerActivity", thetaInfoEvent.message)
-                        runOnUiThread {  }
                     }
 
                     override fun onTrafficEvent(trafficEvent: ThetaTrafficEvent) {
@@ -119,19 +116,16 @@ class ExoPlayer : Activity() {
                     }
 
                     override fun onErrorEvent(errorEvent: ThetaErrorEvent) {
-                        runOnUiThread { }
                     }
                 }
         )
 
         return HlsMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
     }
-
     private fun releasePlayer() {
         if (player != null) {
-            updateStartPosition()
-            shouldAutoPlay = player!!.playWhenReady
-            player!!.release()
+            playWhenReady = player?.playWhenReady ?: true
+            player?.release()
             player = null
         }
     }
@@ -158,7 +152,7 @@ class ExoPlayer : Activity() {
         outState.putBoolean(KEY_PLAY_WHEN_READY, playWhenReady)
         outState.putInt(KEY_WINDOW, currentWindow)
         outState.putLong(KEY_POSITION, playbackPosition)
-        outState.putString("url", url)
+        outState.putString("url", streamUrl)
         super.onSaveInstanceState(outState)
     }
 
@@ -168,53 +162,64 @@ class ExoPlayer : Activity() {
         playWhenReady = player!!.playWhenReady
     }
 
-    private fun updateButtonVisibilities() {
-//        if (player == null) {
-//            return
-//        }
-//        val mappedTrackInfo = trackSelector!!.currentMappedTrackInfo ?: return
-//        for (i in 0 .. mappedTrackInfo.rendererCount) {
-//            val trackGroups = mappedTrackInfo.getTrackGroups(i)
-//            if (trackGroups.length != 0) {
-//                if (player!!.getRendererType(i) == C.TRACK_TYPE_VIDEO) {
-//                }
-//            }
-//        }
-    }
-
     override fun onDestroy() {
         ThetaDelivery.destroy(this)
         super.onDestroy()
     }
 
-    private inner class PlayerEventListener : Player.EventListener {
-        override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-            when (playbackState) {
-                Player.STATE_IDLE -> progressBar!!.visibility = View.VISIBLE
-                Player.STATE_BUFFERING -> progressBar!!.visibility = View.VISIBLE
-                Player.STATE_READY -> progressBar!!.visibility = View.GONE
-                Player.STATE_ENDED -> {
-                    Log.e("video finished", "finish")
-                    VideoClassListener.getInstance().videoState(true)
-                    progressBar!!.visibility = View.GONE
-                }
-            }
-            updateButtonVisibilities()
-        }
-
-        override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {
-            updateButtonVisibilities()
-            // The video tracks are no supported in this device.
-            if (trackGroups !== lastSeenTrackGroupArray) {
-                val mappedTrackInfo = trackSelector?.currentMappedTrackInfo
-                if (mappedTrackInfo != null) {
-                    if (mappedTrackInfo.getTypeSupport(C.TRACK_TYPE_VIDEO)
-                            == MappedTrackInfo.RENDERER_SUPPORT_UNSUPPORTED_TRACKS) {
-                        Toast.makeText(this@ExoPlayer, "Error unsupported track", Toast.LENGTH_SHORT).show()
+    private fun getPlayerListener(): Player.EventListener {
+        if (playerListener == null) {
+            playerListener = object : Player.EventListener {
+                override fun onTimelineChanged(timeline: Timeline, manifest: Any, reason: Int) {
+                    if (player != null && player?.bufferedPosition ?: 0 <= -2000) {
+                        player?.seekToDefaultPosition()
                     }
                 }
-                lastSeenTrackGroupArray = trackGroups
+
+                override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {
+
+                }
+
+                override fun onLoadingChanged(isLoading: Boolean) {
+
+                }
+
+                override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+
+                }
+
+                override fun onRepeatModeChanged(repeatMode: Int) {
+
+                }
+
+                override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
+
+                }
+
+                override fun onPlayerError(error: ExoPlaybackException) {
+                    Log.d("OnPlayerError", "message: " + error.message)
+                }
+
+                override fun onPositionDiscontinuity(reason: Int) {
+
+                }
+
+                override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {
+
+                }
+
+                override fun onSeekProcessed() {
+
+                }
             }
         }
+
+        return playerListener!!
+    }
+
+
+    companion object {
+
+        private val BANDWIDTH_METER = DefaultBandwidthMeter()
     }
 }
