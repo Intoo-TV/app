@@ -12,6 +12,12 @@ import {
   RECEIVE_PAST_EXPERIENCES_SUCCESS,
   RECEIVE_PAST_EXPERIENCES_FAILURE,
   RECEIVE_PAST_EXPERIENCES_REQUEST,
+  EXPERIENCE_TOKEN_RESERVE_SUCCESS,
+  EXPERIENCE_TOKEN_RESERVE_FAILURE,
+  EXPERIENCE_TOKEN_RESERVE,
+  EXPERIENCE_TOKEN_RATE,
+  EXPERIENCE_TOKEN_RATE_SUCCESS,
+  EXPERIENCE_TOKEN_RATE_FAILURE,
 } from '../constants/Actions';
 
 async function createExperienceJson(params, token) {
@@ -38,21 +44,64 @@ export function createExperience(params, templateIndex = -1) {
   };
 }
 
-async function expireTokenJson(tokenId, token) {
-  let params = {tokenId};
-  return postWithAuth(`experience/complete/`, params, token);
+async function startExperienceJson(tokenId, token) {
+  return postWithAuth(`experience/${tokenId}/start`, {}, token);
 }
 
-export function expireToken(tokenId) {
+export function startExperience(tokenId) {
   return function (dispatch, getState) {
     dispatch({type: EXPERIENCE_TOKEN_EXPIRE});
     let {token} = getState().auth;
-    return expireTokenJson(tokenId, token).then((json) => {
+    return startExperienceJson(tokenId, token).then((json) => {
       if (json && !json.error) {
         dispatch({type: EXPERIENCE_TOKEN_EXPIRE_SUCCESS});
         return true;
       } else {
         dispatch({type: EXPERIENCE_TOKEN_EXPIRE_FAILURE});
+        // dispatch(addAlert('error', '', json.error));
+        console.log(json.error);
+        return false;
+      }
+    });
+  };
+}
+
+async function reserveExperienceJson(tokenId, token) {
+  return postWithAuth(`experience/${tokenId}/reserve`, {}, token);
+}
+
+export function reserveExperience(tokenId) {
+  return function (dispatch, getState) {
+    dispatch({type: EXPERIENCE_TOKEN_RESERVE});
+    let {token} = getState().auth;
+    return reserveExperienceJson(tokenId, token).then((json) => {
+      if (json && !json.error) {
+        dispatch({type: EXPERIENCE_TOKEN_RESERVE_SUCCESS});
+        return true;
+      } else {
+        dispatch({type: EXPERIENCE_TOKEN_RESERVE_FAILURE});
+        // dispatch(addAlert('error', '', json.error));
+        console.log(json.error);
+        return false;
+      }
+    });
+  };
+}
+
+async function rateExperienceJson(tokenId, rate, token) {
+  return postWithAuth(`experience/${tokenId}/reserve`, {rate}, token);
+}
+
+export function rateExperience(tokenId, rate) {
+  return function (dispatch, getState) {
+    dispatch({type: EXPERIENCE_TOKEN_RATE});
+    let {token} = getState().auth;
+    return rateExperienceJson(tokenId, rate, token).then((json) => {
+      if (json && !json.error) {
+        dispatch({type: EXPERIENCE_TOKEN_RATE_SUCCESS});
+        return true;
+      } else {
+        dispatch({type: EXPERIENCE_TOKEN_RATE_FAILURE});
         // dispatch(addAlert('error', '', json.error));
         console.log(json.error);
         return false;
@@ -71,7 +120,7 @@ function receiveUpcomingExperiences(data) {
 }
 
 async function fetchUpcomingExperiencesJson(token) {
-  let result = await getWithAuth(`user/experiences?past=false`, token);
+  let result = await getWithAuth(`user/experience?past=false`, token);
   if (result && !result.error) {
     return result;
   } else {
@@ -118,7 +167,7 @@ function receivePastExperiences(data) {
 }
 
 async function fetchPastExperiencesJson(token) {
-  let result = await getWithAuth(`user/experiences?past=true`, token);
+  let result = await getWithAuth(`user/experience?past=true`, token);
   if (result && !result.error) {
     return result;
   } else {

@@ -19,7 +19,6 @@ import requestCameraAndAudioPermission from '../components/Permission';
 import styles from '../components/Style';
 
 interface Props {}
-
 /**
  * @property peerIds Array for storing connected peers
  * @property appId

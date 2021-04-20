@@ -6,12 +6,6 @@ import Logo from '../assets/Logo.png';
 export default class ExpLive extends React.Component {
   state = {};
 
-  componentDidMount() {
-    this.svg.toDataURL((data) => {
-      // console.log(data);
-    });
-  }
-
   render() {
     return (
       <View style={styles.container}>

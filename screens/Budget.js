@@ -13,6 +13,7 @@ import Card from '../components/Card';
 import Coins from '../assets/coins.png';
 import {connect} from 'react-redux';
 import {mapStateToProps} from '../tools/util';
+import {reserveExperience} from '../actions/experience';
 
 class Budget extends React.Component {
   constructor(props) {
@@ -40,12 +41,10 @@ class Budget extends React.Component {
           onPress: async () => {
             this.setState({loading: true});
             console.log('Submitted');
-            // await createAccessToEvent(
-            //   this.state.experience.tokenID,
-            //   this.state.experience.url,
-            //   this.props.wallet.address,
-            // );
-            // this.props.navigation.navigate('ExpLive');
+            this.props.reserveExperience(this.state.experience.tokenID);
+            this.props.navigation.navigate('ExpLive', {
+              url: this.state.experience.url,
+            });
           },
         },
       ],
@@ -160,4 +159,4 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
 });
-export default connect(mapStateToProps, {})(Budget);
+export default connect(mapStateToProps, {reserveExperience})(Budget);
