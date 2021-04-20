@@ -109,12 +109,6 @@ export const createTicket = async (
           console.log('Ticket created!');
           console.log(ticketId.toString());
           console.log(props);
-
-          //ToDo: send ticket to backend
-          console.log('Send token to backend');
-          store.dispatch(
-            AddTokenToExperience(ticketId.toNumber(), props, start, duration),
-          );
         },
       );
 

@@ -1,13 +1,8 @@
 import {getExternal, getWithAuth, postWithAuth} from '../tools/util';
-import {createTicket} from '../contracts';
 import {navigate} from '../RootNavigation';
 import {
   EXPERIENCE_CREATE,
   EXPERIENCE_CREATE_SUCCESS,
-  EXPERIENCE_CREATE_FAILURE,
-  EXPERIENCE_TOKEN_ADD,
-  EXPERIENCE_TOKEN_ADD_FAILURE,
-  EXPERIENCE_TOKEN_ADD_SUCCESS,
   EXPERIENCE_TOKEN_EXPIRE,
   EXPERIENCE_TOKEN_EXPIRE_SUCCESS,
   EXPERIENCE_TOKEN_EXPIRE_FAILURE,
@@ -20,7 +15,7 @@ import {
 } from '../constants/Actions';
 
 async function createExperienceJson(params, token) {
-  return postWithAuth(`experience/nft`, params, token);
+  return postWithAuth(`experience`, params, token);
 }
 
 export function createExperience(params, templateIndex = -1) {
@@ -31,59 +26,15 @@ export function createExperience(params, templateIndex = -1) {
       if (json && !json.error) {
         console.log(json);
         let url = json.url;
-        let start = params.properties.startTime;
-        let duration = params.properties.budget;
-
-        // create NFT
-        let ticket = await createTicket(
-          url,
-          templateIndex,
-          params.properties.isTemplate,
-          start,
-          duration,
-        );
-
-        if (ticket) {
-          // go to QR code screen
-          dispatch({type: EXPERIENCE_CREATE_SUCCESS});
-          navigate('ExpLive', {url});
-        } else {
-          //ToDo: show error
-          dispatch({type: EXPERIENCE_CREATE_FAILURE});
-        }
+        // go to QR code screen
+        dispatch({type: EXPERIENCE_CREATE_SUCCESS});
+        navigate('ExpLive', {url});
         return;
       } else {
         // dispatch(addAlert('error', '', json.error));
         console.log(json.error);
       }
     });
-  };
-}
-
-async function addTokenToExperienceJson(tokenID, url, start, duration, token) {
-  let params = {tokenID, url, start, duration};
-  return postWithAuth(`experience`, params, token);
-}
-
-export function AddTokenToExperience(tokenID, url, start, duration) {
-  console.log('add token to experience');
-  return function (dispatch, getState) {
-    dispatch({type: EXPERIENCE_TOKEN_ADD});
-    let {token} = getState().auth;
-    return addTokenToExperienceJson(tokenID, url, start, duration, token).then(
-      (json) => {
-        console.log(json);
-        if (json && !json.error) {
-          dispatch({type: EXPERIENCE_TOKEN_ADD_SUCCESS});
-          return true;
-        } else {
-          dispatch({type: EXPERIENCE_TOKEN_ADD_FAILURE});
-          // dispatch(addAlert('error', '', json.error));
-          console.log(json);
-          return false;
-        }
-      },
-    );
   };
 }
 

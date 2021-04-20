@@ -11,7 +11,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Card from '../components/Card';
 
 import Coins from '../assets/coins.png';
-import {createAccessToEvent} from '../contracts';
 import {connect} from 'react-redux';
 import {mapStateToProps} from '../tools/util';
 
@@ -41,11 +40,11 @@ class Budget extends React.Component {
           onPress: async () => {
             this.setState({loading: true});
             console.log('Submitted');
-            await createAccessToEvent(
-              this.state.experience.tokenID,
-              this.state.experience.url,
-              this.props.wallet.address,
-            );
+            // await createAccessToEvent(
+            //   this.state.experience.tokenID,
+            //   this.state.experience.url,
+            //   this.props.wallet.address,
+            // );
             // this.props.navigation.navigate('ExpLive');
           },
         },

@@ -76,17 +76,15 @@ class CreateRequest extends React.Component {
             console.log('Submitted');
 
             let params = {
-              title: this.state.title,
-              properties: {
-                name: this.state.title,
+              nft: {
+                title: this.state.title,
                 description: this.state.description,
                 interests: this.state.selectedInterests,
-                date: this.state.selectedStartDate,
-                startTime: this.state.start,
-                endTime: this.state.end,
-                budget: this.state.selectedBudget,
-                isTemplate: this.state.saveTemplate,
+                start: this.state.start,
+                duration: this.state.selectedBudget,
               },
+              saveTemplate: this.state.saveTemplate,
+              templateId: -1,
             };
 
             this.props.createExperience(params);
