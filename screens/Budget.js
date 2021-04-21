@@ -41,7 +41,7 @@ class Budget extends React.Component {
           onPress: async () => {
             this.setState({loading: true});
             console.log('Submitted');
-            this.props.reserveExperience(this.state.experience.tokenID);
+            this.props.reserveExperience(this.state.experience.id);
             this.props.navigation.navigate('ExpLive', {
               url: this.state.experience.url,
             });

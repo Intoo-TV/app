@@ -18,6 +18,9 @@ import {
   EXPERIENCE_TOKEN_RATE,
   EXPERIENCE_TOKEN_RATE_SUCCESS,
   EXPERIENCE_TOKEN_RATE_FAILURE,
+  RECEIVE_NEW_EXPERIENCES_REQUEST,
+  RECEIVE_NEW_EXPERIENCES_SUCCESS,
+  RECEIVE_NEW_EXPERIENCES_FAILURE,
 } from '../constants/Actions';
 
 async function createExperienceJson(params, token) {
@@ -66,15 +69,16 @@ export function startExperience(tokenId) {
   };
 }
 
-async function reserveExperienceJson(tokenId, token) {
-  return postWithAuth(`experience/${tokenId}/reserve`, {}, token);
+async function reserveExperienceJson(id, token) {
+  return postWithAuth(`experience/${id}/reserve`, {}, token);
 }
 
-export function reserveExperience(tokenId) {
+export function reserveExperience(id) {
   return function (dispatch, getState) {
     dispatch({type: EXPERIENCE_TOKEN_RESERVE});
     let {token} = getState().auth;
-    return reserveExperienceJson(tokenId, token).then((json) => {
+    return reserveExperienceJson(id, token).then((json) => {
+      console.log(json);
       if (json && !json.error) {
         dispatch({type: EXPERIENCE_TOKEN_RESERVE_SUCCESS});
         return true;
@@ -88,15 +92,15 @@ export function reserveExperience(tokenId) {
   };
 }
 
-async function rateExperienceJson(tokenId, rate, token) {
-  return postWithAuth(`experience/${tokenId}/reserve`, {rate}, token);
+async function rateExperienceJson(id, rate, token) {
+  return postWithAuth(`experience/${id}/reserve`, {rate}, token);
 }
 
-export function rateExperience(tokenId, rate) {
+export function rateExperience(id, rate) {
   return function (dispatch, getState) {
     dispatch({type: EXPERIENCE_TOKEN_RATE});
     let {token} = getState().auth;
-    return rateExperienceJson(tokenId, rate, token).then((json) => {
+    return rateExperienceJson(id, rate, token).then((json) => {
       if (json && !json.error) {
         dispatch({type: EXPERIENCE_TOKEN_RATE_SUCCESS});
         return true;
@@ -120,7 +124,7 @@ function receiveUpcomingExperiences(data) {
 }
 
 async function fetchUpcomingExperiencesJson(token) {
-  let result = await getWithAuth(`user/experience?past=false`, token);
+  let result = await getWithAuth(`experience?past=false`, token);
   if (result && !result.error) {
     return result;
   } else {
@@ -167,7 +171,7 @@ function receivePastExperiences(data) {
 }
 
 async function fetchPastExperiencesJson(token) {
-  let result = await getWithAuth(`user/experience?past=true`, token);
+  let result = await getWithAuth(`experience?past=true`, token);
   if (result && !result.error) {
     return result;
   } else {
@@ -204,13 +208,22 @@ async function fetchNewExperiencesJson(token) {
   }
 }
 
+function receiveNewExperiences(data) {
+  return {
+    type: !data.error
+      ? RECEIVE_NEW_EXPERIENCES_SUCCESS
+      : RECEIVE_NEW_EXPERIENCES_FAILURE,
+    data,
+  };
+}
+
 export function getNewExperiences() {
   return function (dispatch, getState) {
-    dispatch({type: RECEIVE_PAST_EXPERIENCES_REQUEST});
+    dispatch({type: RECEIVE_NEW_EXPERIENCES_REQUEST});
     let {token} = getState().auth;
     return fetchNewExperiencesJson(token).then(async (json) => {
       let experiences = await collectExperienceDetails(json);
-      dispatch(receivePastExperiences(experiences));
+      dispatch(receiveNewExperiences(experiences));
     });
   };
 }

@@ -21,6 +21,7 @@ const persistConfig = {
     'wallet',
     'upcomingExperiences',
     'pastExperiences',
+    'newExperiences',
   ],
 };
 

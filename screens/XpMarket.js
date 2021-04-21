@@ -26,70 +26,78 @@ class XpMarket extends Component {
     return (
       <ScrollView style={{flex: 1, paddingTop: '5%', backgroundColor: '#FFF'}}>
         <Header navigation={this.props.navigation} />
+        {this.props.newExperiences.length > 0 ? (
+          <View>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignSelf: 'center',
+                marginTop: 20,
+                alignContent: 'center',
+                alignItems: 'center',
+                marginHorizontal: 10,
+              }}>
+              <Carousel
+                layout={'tinder'}
+                ref={(ref) => (this.carousel = ref)}
+                data={this.props.newExperiences}
+                sliderWidth={350}
+                itemWidth={300}
+                layoutCardOffset={10}
+                renderItem={(item) => TinderCard(item)}
+                activeSlideOffset={10}
+                activeSlideAlignment={'end'}
+                onSnapToItem={(index) => this.setState({activeIndex: index})}
+              />
+            </View>
 
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignSelf: 'center',
-            marginTop: 20,
-            alignContent: 'center',
-            alignItems: 'center',
-            marginHorizontal: 10,
-          }}>
-          <Carousel
-            layout={'tinder'}
-            ref={(ref) => (this.carousel = ref)}
-            data={this.props.upcomingExperiences}
-            sliderWidth={350}
-            itemWidth={300}
-            layoutCardOffset={10}
-            renderItem={(item) => TinderCard(item)}
-            activeSlideOffset={10}
-            activeSlideAlignment={'end'}
-            onSnapToItem={(index) => this.setState({activeIndex: index})}
-          />
-        </View>
-
-        <View style={{marginTop: 20}}>
-          <View style={{alignSelf: 'center', flex: 1, flexDirection: 'row'}}>
-            <Icon
-              onPress={() => {
-                this.carousel.snapToNext();
-              }}
-              name="thumbs-down"
-              size={70}
-              color={'#000'}
-              style={{alignSelf: 'baseline'}}></Icon>
-            <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate('XpDetails', {
-                  experience: this.props.upcomingExperiences[
-                    this.state.activeIndex
-                  ],
-                })
-              }>
-              <Image
-                source={require('../assets/logob.png')}
-                style={{
-                  width: 100,
-                  height: 100,
-                  resizeMode: 'contain',
-                  alignSelf: 'center',
-                  marginHorizontal: '5%',
-                }}></Image>
-            </TouchableOpacity>
-            <Icon
-              onPress={() => {
-                this.carousel.snapToNext();
-              }}
-              name="thumbs-up"
-              size={70}
-              color={'#000'}
-              style={{alignSelf: 'baseline'}}></Icon>
+            <View style={{marginTop: 20}}>
+              <View
+                style={{alignSelf: 'center', flex: 1, flexDirection: 'row'}}>
+                <Icon
+                  onPress={() => {
+                    this.carousel.snapToNext();
+                  }}
+                  name="thumbs-down"
+                  size={70}
+                  color={'#000'}
+                  style={{alignSelf: 'baseline'}}></Icon>
+                <TouchableOpacity
+                  onPress={() =>
+                    this.props.navigation.navigate('XpDetails', {
+                      experience: this.props.newExperiences[
+                        this.state.activeIndex
+                      ],
+                    })
+                  }>
+                  <Image
+                    source={require('../assets/logob.png')}
+                    style={{
+                      width: 100,
+                      height: 100,
+                      resizeMode: 'contain',
+                      alignSelf: 'center',
+                      marginHorizontal: '5%',
+                    }}></Image>
+                </TouchableOpacity>
+                <Icon
+                  onPress={() => {
+                    this.carousel.snapToNext();
+                  }}
+                  name="thumbs-up"
+                  size={70}
+                  color={'#000'}
+                  style={{alignSelf: 'baseline'}}></Icon>
+              </View>
+            </View>
           </View>
-        </View>
+        ) : (
+          <Text style={styles.text}>
+            There are no new experiences at this time.
+          </Text>
+        )}
       </ScrollView>
     );
   }
@@ -122,6 +130,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc',
     height: 500,
     width: 120,
+  },
+  text: {
+    fontSize: 16,
+    marginTop: '50%',
+    alignSelf: 'center',
   },
 });
 
