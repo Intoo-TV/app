@@ -83,9 +83,13 @@ class XpMarket extends Component {
                     }}></Image>
                 </TouchableOpacity>
                 <Icon
-                  onPress={() => {
-                    this.carousel.snapToNext();
-                  }}
+                  onPress={() =>
+                    this.props.navigation.navigate('XpDetails', {
+                      experience: this.props.newExperiences[
+                        this.state.activeIndex
+                      ],
+                    })
+                  }
                   name="thumbs-up"
                   size={70}
                   color={'#000'}
