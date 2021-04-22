@@ -18,6 +18,7 @@ import {
   getUpcomingExperiences,
   getPastExperiences,
 } from '../actions/experience';
+import {formatDateTime} from '../tools/util';
 
 class GuestHome extends Component {
   constructor(props) {
@@ -72,10 +73,12 @@ class GuestHome extends Component {
             <Text style={{fontSize: 20, marginLeft: 10, color: '#36A9E1'}}>
               {item.title}
             </Text>
-            <Text style={{marginLeft: 10, color: '#000'}}>{item.title}</Text>
+            <Text style={{marginLeft: 10, color: '#000'}}>
+              {item.description}
+            </Text>
           </View>
         </View>
-        <Text style={{marginLeft: 10}}>Date-Time</Text>
+        <Text style={{marginLeft: 10}}>{formatDateTime(item.start)}</Text>
       </View>
     );
   }
@@ -139,6 +142,7 @@ class GuestHome extends Component {
               </Text>
             )}
           </View>
+          <View style={{height: 100}} />
         </ScrollView>
         <View
           style={{

@@ -155,3 +155,24 @@ export function isValidPasswordStrength(password) {
 export function mapStateToProps(state) {
   return state;
 }
+
+export function leadingZero(number) {
+  if (number > 10) {
+    return number;
+  } else {
+    return '0' + number;
+  }
+}
+
+export function formatDateTime(date) {
+  const time = new Date(date);
+  const year = time.getFullYear();
+  const month = time.getMonth() + 1;
+  const day = time.getDate();
+  const hour = time.getHours();
+  const minute = time.getMinutes();
+
+  return `${year}/${leadingZero(month)}/${leadingZero(day)} ${leadingZero(
+    hour,
+  )}:${leadingZero(minute)}`;
+}

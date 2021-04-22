@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 
 import Icon from 'react-native-vector-icons/Entypo';
+import {formatDateTime} from '../tools/util';
 
 export default function HostUpcomingExperienceCard({item}) {
   return (
@@ -54,15 +55,6 @@ export default function HostUpcomingExperienceCard({item}) {
             </Text>
           </View>
 
-          <Text
-            style={{
-              marginLeft: '5%',
-              marginTop: '5%',
-              color: '#000',
-              fontWeight: 'bold',
-            }}>
-            {item.text}
-          </Text>
           <Text style={{marginLeft: '5%', marginTop: '5%', color: '#000'}}>
             {item.description}
           </Text>
@@ -79,43 +71,13 @@ export default function HostUpcomingExperienceCard({item}) {
                 color: '#000',
                 fontWeight: 'bold',
               }}>
-              5 XP
-            </Text>
-            <Text
-              style={{
-                fontSize: 10,
-                marginLeft: 5,
-                marginTop: 5,
-                color: '#000',
-                fontWeight: 'bold',
-              }}>
-              #Label
-            </Text>
-            <Text
-              style={{
-                fontSize: 10,
-                marginLeft: 5,
-                marginTop: 5,
-                color: '#000',
-                fontWeight: 'bold',
-              }}>
-              #Label
-            </Text>
-            <Text
-              style={{
-                fontSize: 10,
-                marginLeft: 5,
-                marginTop: 5,
-                color: '#000',
-                fontWeight: 'bold',
-              }}>
-              #Label
+              {item.duration} XP
             </Text>
           </View>
         </View>
       </View>
       <Text style={{marginLeft: 10, color: '#000', fontWeight: 'bold'}}>
-        Date-Time
+        {formatDateTime(item.start)}
       </Text>
     </View>
   );

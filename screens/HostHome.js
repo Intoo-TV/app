@@ -92,6 +92,7 @@ class HostHome extends Component {
               </Text>
             )}
           </View>
+          <View style={{height: 100}} />
         </ScrollView>
         <View
           style={{

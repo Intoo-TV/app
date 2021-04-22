@@ -3,6 +3,7 @@ import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 
 import Icon from 'react-native-vector-icons/Entypo';
 import {navigate} from '../RootNavigation';
+import {formatDateTime} from '../tools/util';
 
 export default function HostPastExperienceCard({item}) {
   return (
@@ -61,15 +62,6 @@ export default function HostPastExperienceCard({item}) {
               style={{marginLeft: '5%', marginTop: 25}}></Icon>
           </View>
 
-          <Text
-            style={{
-              marginLeft: '5%',
-              marginTop: '5%',
-              color: '#FFF',
-              fontWeight: 'bold',
-            }}>
-            {item.text}
-          </Text>
           <Text style={{marginLeft: '5%', marginTop: '5%', color: '#FFF'}}>
             {item.description}
           </Text>
@@ -86,37 +78,7 @@ export default function HostPastExperienceCard({item}) {
                 color: '#FFF',
                 fontWeight: 'bold',
               }}>
-              5 XP
-            </Text>
-            <Text
-              style={{
-                fontSize: 10,
-                marginLeft: 5,
-                marginTop: 5,
-                color: '#FFF',
-                fontWeight: 'bold',
-              }}>
-              #Label
-            </Text>
-            <Text
-              style={{
-                fontSize: 10,
-                marginLeft: 5,
-                marginTop: 5,
-                color: '#FFF',
-                fontWeight: 'bold',
-              }}>
-              #Label
-            </Text>
-            <Text
-              style={{
-                fontSize: 10,
-                marginLeft: 5,
-                marginTop: 5,
-                color: '#FFF',
-                fontWeight: 'bold',
-              }}>
-              #Label
+              {item.duration} XP
             </Text>
           </View>
         </View>
@@ -124,7 +86,7 @@ export default function HostPastExperienceCard({item}) {
       <Text
         onPress={() => navigate('XpCabin')}
         style={{marginLeft: 10, color: '#000', fontWeight: 'bold'}}>
-        Date-Time
+        {formatDateTime(item.start)}
       </Text>
     </View>
   );
