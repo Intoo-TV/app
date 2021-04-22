@@ -124,7 +124,7 @@ function receiveUpcomingExperiences(data) {
 }
 
 async function fetchUpcomingExperiencesJson(token) {
-  let result = await getWithAuth(`experience?past=false`, token);
+  let result = await getWithAuth(`user/experiences?past=false`, token);
   if (result && !result.error) {
     return result;
   } else {
@@ -148,13 +148,10 @@ async function collectExperienceDetails(experienceData) {
   if (experienceData.experiences) {
     for (let i = 0; i < experienceData.experiences.length; i++) {
       let experience = experienceData.experiences[i];
-      // console.log(experience);
       let data = await getExperienceData(experience.url);
-      // console.log(data);
       experiences.push({
-        title: data.title,
         ...experience,
-        ...data.properties,
+        ...data,
       });
     }
   }
@@ -171,7 +168,7 @@ function receivePastExperiences(data) {
 }
 
 async function fetchPastExperiencesJson(token) {
-  let result = await getWithAuth(`experience?past=true`, token);
+  let result = await getWithAuth(`user/experiences?past=true`, token);
   if (result && !result.error) {
     return result;
   } else {
