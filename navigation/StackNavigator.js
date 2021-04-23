@@ -19,6 +19,7 @@ import XpDetails from '../screens/XpDetails';
 import XpMarket from '../screens/XpMarket';
 import Store from '../screens/Store';
 import Broadcast from '../screens/Broadcast';
+import Stream from '../screens/Stream';
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 
@@ -52,6 +53,7 @@ export default function StackNavigator() {
       <Stack.Screen name="XpDetails" component={XpDetails} />
       <Stack.Screen name="XpMarket" component={XpMarket} />
       <Stack.Screen name="Broadcast" component={Broadcast} />
+      <Stack.Screen name="Stream" component={Stream} />
     </Stack.Navigator>
   );
 }

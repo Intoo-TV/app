@@ -19,6 +19,7 @@ import {
   getPastExperiences,
 } from '../actions/experience';
 import {formatDateTime} from '../tools/util';
+import {navigate} from '../RootNavigation';
 
 class GuestHome extends Component {
   constructor(props) {
@@ -36,8 +37,14 @@ class GuestHome extends Component {
   }
 
   _renderItem({item, index}) {
+    console.log(item);
     return (
-      <View>
+      <TouchableOpacity
+        onPress={() => {
+          navigate('Stream', {
+            experience: item,
+          });
+        }}>
         <View
           style={{
             borderColor: '#000',
@@ -79,7 +86,7 @@ class GuestHome extends Component {
           </View>
         </View>
         <Text style={{marginLeft: 10}}>{formatDateTime(item.start)}</Text>
-      </View>
+      </TouchableOpacity>
     );
   }
 
