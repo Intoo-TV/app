@@ -18,6 +18,7 @@ import XpCalendar from '../screens/XpCalendar';
 import XpDetails from '../screens/XpDetails';
 import XpMarket from '../screens/XpMarket';
 import Store from '../screens/Store';
+import Broadcast from '../screens/Broadcast';
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 
@@ -50,6 +51,7 @@ export default function StackNavigator() {
       <Stack.Screen name="XpCalendar" component={XpCalendar} />
       <Stack.Screen name="XpDetails" component={XpDetails} />
       <Stack.Screen name="XpMarket" component={XpMarket} />
+      <Stack.Screen name="Broadcast" component={Broadcast} />
     </Stack.Navigator>
   );
 }

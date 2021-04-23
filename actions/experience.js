@@ -22,6 +22,7 @@ import {
   RECEIVE_NEW_EXPERIENCES_SUCCESS,
   RECEIVE_NEW_EXPERIENCES_FAILURE,
 } from '../constants/Actions';
+import {store} from '../store';
 
 async function createExperienceJson(params, token) {
   return postWithAuth(`experience`, params, token);
@@ -223,4 +224,10 @@ export function getNewExperiences() {
       dispatch(receiveNewExperiences(experiences));
     });
   };
+}
+
+export async function fetchStreamToken(id) {
+  let {token} = store.getState().auth;
+  let result = await postWithAuth(`experience/${id}/stream`, {}, token);
+  return result;
 }

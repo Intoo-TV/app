@@ -6,7 +6,6 @@ import {
 export default function upcomingExperiences(state = [], action) {
   switch (action.type) {
     case RECEIVE_UPCOMING_EXPERIENCES_SUCCESS:
-      console.log(action.data);
       return action.data ? action.data : state;
     case LOG_OUT:
       return [];

@@ -3,82 +3,90 @@ import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 
 import Icon from 'react-native-vector-icons/Entypo';
 import {formatDateTime} from '../tools/util';
+import {navigate} from '../RootNavigation';
 
-export default function HostUpcomingExperienceCard({item}) {
+export default function HostUpcomingExperienceCard({item, navigation}) {
   return (
     <View>
-      <View
-        style={{
-          borderColor: '#000',
-          borderWidth: 1,
-          borderRadius: 10,
-          width: 200,
+      <TouchableOpacity
+        onPress={() => {
+          navigate('Broadcast', {
+            experience: item,
+          });
         }}>
         <View
           style={{
+            borderColor: '#000',
+            borderWidth: 1,
             borderRadius: 10,
             width: 200,
-            paddingBottom: 10,
-            marginLeft: 0,
-            marginRight: 10,
-            elevation: 3,
-            borderColor: '#000',
-            borderWidth: 0.1,
-            shadowRadius: 30,
-            backgroundColor: '#FFF',
-            shadowOffset: {width: 50, height: 50},
-            shadowColor: 'black',
-            shadowOpacity: 0.7,
-            minHeight: 300,
           }}>
-          <View style={{flexDirection: 'row'}}>
-            <Image
-              source={require('../assets/alex.jpg')}
-              style={{
-                width: 50,
-                height: 50,
-                borderRadius: 25,
-                marginTop: '5%',
-                marginLeft: '5%',
-                borderColor: '#000',
-                borderWidth: 1,
-              }}></Image>
-            <Text
-              style={{
-                fontSize: 17.5,
-                marginLeft: 10,
-                marginTop: '10%',
-                color: '#000',
-                fontWeight: 'bold',
-              }}>
-              {item.title}
-            </Text>
-          </View>
+          <View
+            style={{
+              borderRadius: 10,
+              width: 200,
+              paddingBottom: 10,
+              marginLeft: 0,
+              marginRight: 10,
+              elevation: 3,
+              borderColor: '#000',
+              borderWidth: 0.1,
+              shadowRadius: 30,
+              backgroundColor: '#FFF',
+              shadowOffset: {width: 50, height: 50},
+              shadowColor: 'black',
+              shadowOpacity: 0.7,
+              minHeight: 300,
+            }}>
+            <View style={{flexDirection: 'row'}}>
+              <Image
+                source={require('../assets/alex.jpg')}
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: 25,
+                  marginTop: '5%',
+                  marginLeft: '5%',
+                  borderColor: '#000',
+                  borderWidth: 1,
+                }}></Image>
+              <Text
+                style={{
+                  fontSize: 17.5,
+                  marginLeft: 10,
+                  marginTop: '10%',
+                  color: '#000',
+                  fontWeight: 'bold',
+                }}>
+                {item.title}
+              </Text>
+            </View>
 
-          <Text style={{marginLeft: '5%', marginTop: '5%', color: '#000'}}>
-            {item.description}
-          </Text>
-          <View style={{flexDirection: 'row', marginTop: '5%'}}>
-            <Icon
-              name="database"
-              size={15}
-              color={'#000'}
-              style={{marginLeft: '5%'}}></Icon>
-            <Text
-              style={{
-                fontSize: 15,
-                marginLeft: 5,
-                color: '#000',
-                fontWeight: 'bold',
-              }}>
-              {item.duration} XP
+            <Text style={{marginLeft: '5%', marginTop: '5%', color: '#000'}}>
+              {item.description}
             </Text>
+            <View style={{flexDirection: 'row', marginTop: '5%'}}>
+              <Icon
+                name="database"
+                size={15}
+                color={'#000'}
+                style={{marginLeft: '5%'}}></Icon>
+              <Text
+                style={{
+                  fontSize: 15,
+                  marginLeft: 5,
+                  color: '#000',
+                  fontWeight: 'bold',
+                }}>
+                {item.duration} XP
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
-      <Text style={{marginLeft: 10, color: '#000', fontWeight: 'bold'}}>
-        {formatDateTime(item.start)}
-      </Text>
+        <Text style={{marginLeft: 10, color: '#000', fontWeight: 'bold'}}>
+          {formatDateTime(item.start)}
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }
